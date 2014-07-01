@@ -1,0 +1,3 @@
+# Ignore the cJSON and 2+2 evaluator libraries
+.cJSON
+.evaluator
