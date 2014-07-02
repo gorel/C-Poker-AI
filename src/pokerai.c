@@ -2,7 +2,6 @@
 
 #define AI_WIN  1
 #define AI_LOSE 0
-
 /*
  * Spawn Monte Carlo threads to simulate poker games
  * ai: the AI which should spawn the threads
@@ -25,6 +24,27 @@ void *SimulateGames(void *_ai);
  */
 static
 int SimulateSingleGame(PokerAI *ai);
+
+/*
+ * Randomly draw a card from the deck
+ * and remove that card from the deck
+ * deck: the deck to draw a card from
+ * psize: a pointer to the size of the deck
+ * return: a random card from the deck
+ */
+static
+int draw(int *deck, int *psize);
+
+/*
+ * Calculate the maximum opponent score
+ * from the given list of opponent hands
+ * opponents: an array of poker hands
+ * numopponents: the number of opponents in the array
+ * numcards: the size of each hand
+ * return: the score of the best hand
+ */
+static
+int BestOpponentHand(int **opponents, int numopponents, int numcards);
 
 /*
  * Create a new PokerAI
@@ -61,15 +81,15 @@ void DestroyPokerAI(PokerAI *ai)
 
 /*
  * Set debug logging to the given level
- * and output to the given file descriptor
+ * and output to the given FILE
  * ai: the AI to set logging for
  * level: the logging level of output
- * fd: the file descriptor where output is sent
+ * file: the FILE where output should be logged
  */
-void SetLogging(PokerAI *ai, LOGLEVEL level, int fd)
+void SetLogging(PokerAI *ai, LOGLEVEL level, FILE *file)
 {
     ai->loglevel = level;
-    ai->loggingfd = fd;
+    ai->logfile = file;
 }
 
 /*
@@ -79,8 +99,8 @@ void SetLogging(PokerAI *ai, LOGLEVEL level, int fd)
  */
 void UpdateGameState(PokerAI *ai, cJSON *new_state)
 {
-    SetGameState(&ai->game, new_state);
     ai->action.type = ACTION_UNSET;
+    SetGameState(&ai->game, new_state);
 }
 
 /*
@@ -155,7 +175,6 @@ void SpawnMonteCarloThreads(PokerAI *ai)
     }
 }
 
-
 /*
  * Simulate games for the given AI
  * _ai: a void pointer to a PokerAI pointer
@@ -196,6 +215,116 @@ void *SimulateGames(void *_ai)
 static
 int SimulateSingleGame(PokerAI *ai)
 {
-   //TODO: Simulate a single Poker Game
-   return AI_LOSE;
+    //TODO: Simulate a single Poker Game
+    GameState *game = &ai->game;
+    int me[NUM_HAND + NUM_COMMUNITY];
+    int opponents[MAX_OPPONENTS][NUM_HAND + NUM_COMMUNITY];
+    int community[NUM_COMMUNITY];
+    int myscore;
+    int bestopponent;
+
+    //Create a deck as a randomized queue data structure
+    int deck[52] = {0};
+    int decksize = 0;
+    for (int i = 0; i < decksize; i++)
+    {
+        if (game->deck[i])
+        {
+            deck[decksize] = i;
+            decksize++;
+        }
+    }
+
+    //Add the known community cards to the simulation community list
+    for (int i = 0; i < game->communitysize; i++)
+    {
+        community[i] = game->community[i];
+    }
+
+    //Distribute the rest of the community cards
+    for (int i = game->communitysize; i < NUM_COMMUNITY; i++)
+    {
+        community[i] = draw(deck, &decksize);
+    }
+
+    //Give each opponent their cards
+    for (int opp = 0; opp < game->num_opponents; opp++)
+    {
+        //Personal cards
+        for (int i = 0; i < NUM_HAND; i++)
+        {
+            opponents[opp][i] = draw(deck, &decksize);
+        }
+
+        //Community cards
+        for (int i = NUM_HAND; i < NUM_COMMUNITY + NUM_HAND; i++)
+        {
+            opponents[opp][i] = community[i - NUM_HAND];
+        }
+    }
+
+    //Put my cards into a new array
+    for (int i = 0; i < NUM_HAND; i++)
+    {
+        me[i] = game->hand[i];
+    }
+    for (int i = NUM_HAND; i < NUM_HAND + NUM_COMMUNITY; i++)
+    {
+        me[i] = community[i - NUM_HAND];
+    }
+
+    //See who won
+    myscore = GetHandValue(me, NUM_HAND + NUM_COMMUNITY);
+    bestopponent = BestOpponentHand((int **)opponents, game->num_opponents, NUM_HAND + NUM_COMMUNITY);
+    if (myscore > bestopponent)
+    {
+        return AI_WIN;
+    }
+    else
+    {
+        return AI_LOSE;
+    }
+}
+
+/*
+ * Randomly draw a card from the deck
+ * and remove that card from the deck
+ * deck: the deck to draw a card from
+ * psize: a pointer to the size of the deck
+ * return: a random card from the deck
+ */
+static
+int draw(int *deck, int *psize)
+{
+    int index = rand() % *psize;
+    int value = deck[index];
+    deck[index] = deck[*psize - 1];
+    *psize -= 1;
+
+    return value;
+}
+
+/*
+ * Calculate the maximum opponent score
+ * from the given list of opponent hands
+ * opponents: an array of poker hands
+ * numopponents: the number of opponents in the array
+ * numcards: the size of each hand
+ * return: the score of the best hand
+ */
+static
+int BestOpponentHand(int **opponents, int numopponents, int numcards)
+{
+    int max = 0;
+    int score;
+    for (int i = 0; i < numopponents; i++)
+    {
+        score = GetHandValue(opponents[i], numcards);
+        if (score > max)
+        {
+            max = score;
+        }
+    }
+
+    return max;
 }
