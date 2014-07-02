@@ -100,25 +100,52 @@ cJSON *httpGetJSON(char *url)
 /*
  * Make an HTTP POST request to the specified URL
  * url: the url where the POST request will be made
- * params: the parameters to POST
+ * postfields: the POST data
  * return: the contents of the HTTP POST
  */
-char *httpPost(char *url, char **params)
+char *httpPost(char *url, char *postfields)
 {
-    //TODO: Make HTTP POST request
-    return NULL;
+    CURL *curl_handle;
+    CURLcode res;
+
+    struct pagecontents page;
+    page.data = malloc(1);
+    page.size = 0;
+
+    //Initialize the curl handle
+    curl_handle = curl_easy_init();
+
+    //Set user agent in case server requires it
+    SET_CURL_USERAGENT(curl_handle);
+
+    //Set URL and write callback
+    curl_easy_setopt(curl_handle, CURLOPT_URL, url);
+    curl_easy_setopt(curl_handle, CURLOPT_POSTFIELDS, postfields);
+    curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
+    curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&page);
+
+    //Perform the HTTP POST
+    res = curl_easy_perform(curl_handle);
+    if (res != CURLE_OK)
+    {
+        PRINTERR("HTTP POST failed: %s\n", curl_easy_strerror(res));
+    }
+
+    //Clean up the curl handle and return the page contents
+    curl_easy_cleanup(curl_handle);
+    return page.data;
 }
 
 /*
  * Make an HTTP POST request to the specified URL
  * and return the results as JSON
  * url: the url where the POST request will be made
- * params: the parameters to POST
+ * postfields: the POST data
  * return: the contents of the HTTP POST as a cJSON object
  */
-cJSON *httpPostJSON(char *url, char **params)
+cJSON *httpPostJSON(char *url, char *postfields)
 {
-    char *contents = httpPost(url, params);
+    char *contents = httpPost(url, postfields);
     cJSON *json = cJSON_Parse(contents);
 
     free(contents);
