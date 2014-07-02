@@ -12,6 +12,7 @@
 void StartTimer(Timer *timer)
 {
     gettimeofday(&timer->begin, NULL);
+    timer->state = TIMER_RUNNING;
 }
 
 /*
@@ -26,6 +27,7 @@ void StopTimer(Timer *timer)
 
     diff = MICROSECONDS(end) - MICROSECONDS(timer->begin);
     timer->elapsed = MICRO_TO_MILLI(diff);
+    timer->state = TIMER_STOPPED;
 }
 
 /*
