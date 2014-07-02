@@ -2,6 +2,10 @@
 
 #define AI_WIN  1
 #define AI_LOSE 0
+
+//Close enough?
+#define THREAD_ID ((unsigned int)pthread_self() % 100)
+
 /*
  * Spawn Monte Carlo threads to simulate poker games
  * ai: the AI which should spawn the threads
@@ -120,11 +124,34 @@ bool MyTurn(PokerAI *ai)
  */
 char *GetBestAction(PokerAI *ai)
 {
+    double winprob = 0;
     ai->games_won = 0;
     ai->games_simulated = 0;
 
     SpawnMonteCarloThreads(ai);
-    //TODO: Decide on an action
+    winprob = ((double) ai->games_won) / ai->games_simulated;
+
+    if (ai->loglevel == DEBUG)
+    {
+        fprintf(ai->logfile, "Simulated %d games.\n", ai->games_simulated);
+        fprintf(ai->logfile, "Win probability: %lf\n", winprob);
+    }
+
+    //TODO: Make a good AI
+    if (winprob > 0.5)
+    {
+        ai->action.type = BET;
+        ai->action.amount = ai->game.stack * winprob;
+    }
+    else if (winprob > 0.25)
+    {
+        ai->action.type = CALL;
+    }
+    else
+    {
+        ai->action.type = FOLD;
+    }
+
     return ActionGetString(&ai->action);
 }
 
@@ -162,6 +189,11 @@ void WriteAction(PokerAI *ai, FILE *file)
 static
 void SpawnMonteCarloThreads(PokerAI *ai)
 {
+    if (ai->loglevel == DEBUG)
+    {
+        fprintf(ai->logfile, "Spawning Monte Carlo threads.\n");
+    }
+
     //Spawn threads to perform Monte Carlo simulations
     for (int i = 0; i < ai->num_threads; i++)
     {
@@ -172,6 +204,11 @@ void SpawnMonteCarloThreads(PokerAI *ai)
     for (int i = 0; i < ai->num_threads; i++)
     {
         pthread_join(ai->threads[i], NULL);
+    }
+
+    if (ai->loglevel == DEBUG)
+    {
+        fprintf(ai->logfile, "All Monte Carlo threads finished.\n");
     }
 }
 
@@ -186,16 +223,30 @@ void *SimulateGames(void *_ai)
     PokerAI *ai = (PokerAI *)_ai;
     Timer timer;
 
+    if (ai->loglevel == DEBUG)
+    {
+        fprintf(ai->logfile, "[Thread %u] starting\n", THREAD_ID);
+    }
+
     int simulated = 0;
     int won = 0;
 
     StartTimer(&timer);
     //Only check the timer after every 5 simulations
-    for (simulated = 0;
-        (simulated % 5) && (GetElapsedTime(&timer) < ai->timeout);
-         simulated++)
+    while (1)
     {
+        if (simulated % 5 == 0 && GetElapsedTime(&timer) > ai->timeout)
+        {
+            break;
+        }
+
         won += SimulateSingleGame(ai);
+        simulated++;
+    }
+
+    if (ai->loglevel == DEBUG)
+    {
+        fprintf(ai->logfile, "[Thread %u] done\t(simulated %d games)\n", THREAD_ID, simulated);
     }
 
     //Lock the AI mutex and update the totals
@@ -215,22 +266,27 @@ void *SimulateGames(void *_ai)
 static
 int SimulateSingleGame(PokerAI *ai)
 {
-    //TODO: Simulate a single Poker Game
     GameState *game = &ai->game;
     int me[NUM_HAND + NUM_COMMUNITY];
-    int opponents[MAX_OPPONENTS][NUM_HAND + NUM_COMMUNITY];
+    int *opponents[MAX_OPPONENTS];
     int community[NUM_COMMUNITY];
     int myscore;
     int bestopponent;
 
+    for (int i = 0; i < game->num_opponents; i++)
+    {
+        opponents[i] = malloc(sizeof(*opponents[i]) * (NUM_HAND + NUM_COMMUNITY));
+    }
+
     //Create a deck as a randomized queue data structure
     int deck[52] = {0};
     int decksize = 0;
-    for (int i = 0; i < decksize; i++)
+    for (int i = 0; i < NUM_DECK; i++)
     {
         if (game->deck[i])
         {
-            deck[decksize] = i;
+            //Cards are 1 indexed
+            deck[decksize] = i + 1;
             decksize++;
         }
     }
@@ -275,7 +331,7 @@ int SimulateSingleGame(PokerAI *ai)
 
     //See who won
     myscore = GetHandValue(me, NUM_HAND + NUM_COMMUNITY);
-    bestopponent = BestOpponentHand((int **)opponents, game->num_opponents, NUM_HAND + NUM_COMMUNITY);
+    bestopponent = BestOpponentHand(opponents, game->num_opponents, NUM_HAND + NUM_COMMUNITY);
     if (myscore > bestopponent)
     {
         return AI_WIN;
