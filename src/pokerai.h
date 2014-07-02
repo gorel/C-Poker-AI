@@ -1,6 +1,7 @@
 #ifndef __POKER_AI_H__
 #define __POKER_AI_H__
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
@@ -36,7 +37,7 @@ typedef struct pokerai
 
     //Logging for debugging purposes
     LOGLEVEL loglevel;
-    int loggingfd;
+    FILE *logfile;
 } PokerAI;
 
 /*
@@ -56,12 +57,12 @@ void DestroyPokerAI(PokerAI *ai);
 
 /*
  * Set debug logging to the given level
- * and output to the given file descriptor
+ * and output to the given FILE
  * ai: the AI to set logging for
  * level: the logging level of output
- * fd: the file descriptor where output is sent
+ * file: the FILE where output should be logged
  */
-void SetLogging(PokerAI *ai, LOGLEVEL level, int fd);
+void SetLogging(PokerAI *ai, LOGLEVEL level, FILE *file);
 
 /*
  * Update the given PokerAI's game state
