@@ -64,8 +64,7 @@ int main(int argc, char **argv)
             //Post the action to the server
             while (attempts < MAX_TRIES && !response)
             {
-                response = NULL;
-                response = httpPostJSON(postURL, NULL);
+                response = httpPostJSON(postURL, action);
                 attempts++;
 
                 if (!response)
