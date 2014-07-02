@@ -139,7 +139,11 @@ int GetNumOpponents(cJSON *players)
     int playing = 0;
     for (i = 0; i < cJSON_GetArraySize(players); i++)
     {
-        //TODO: Read json object for this player
+        cJSON *player = JSON_ARRAY_ELEM(players, i);
+        if (!JSON_INT(player, "folded"))
+        {
+            playing++;
+        }
     }
 
     return playing;
@@ -157,7 +161,7 @@ void SetGameState(GameState *game, cJSON *json)
     game->stack = JSON_INT(json, "stack");
     game->current_bet = JSON_INT(json, "current_bet");
     game->call_amount = JSON_INT(json, "call_amount");
-    game->phase = GetPhase(JSON_STRING(json, "phase"));
+    game->phase = GetPhase(JSON_STRING(json, "betting_phase"));
     game->your_turn = JSON_INT(json, "your_turn");
     game->num_opponents = GetNumOpponents(JSON(json, "players_at_table"));
 
