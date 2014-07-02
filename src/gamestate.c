@@ -96,9 +96,10 @@ int CardMaskFromString(char *card)
  * Set the card array to the given JSON array
  * cards: the int array of where to place the results
  * json: a JSON array of card strings
+ * return: the number of cards in the array
  */
 static
-void GetCardArray(int *cards, cJSON *json)
+int GetCardArray(int *cards, cJSON *json)
 {
     int i;
 
@@ -106,6 +107,23 @@ void GetCardArray(int *cards, cJSON *json)
     {
         cards[i] = CardMaskFromString(
                 JSON_ARRAY_ELEM(json, i)->valuestring);
+    }
+
+    return cJSON_GetArraySize(json);
+}
+
+/*
+ * Remove cards from the deck that have already been seen in play
+ * deck: the deck to remove cards from
+ * cards: the cards to remove
+ * numcards: the number of cards to remove
+ */
+static inline
+void RemoveCardsFromDeck(bool *deck, int *cards, int numcards)
+{
+    for (int i = 0; i < numcards; i++)
+    {
+        deck[cards[i]] = false;
     }
 }
 
@@ -144,6 +162,11 @@ void SetGameState(GameState *game, cJSON *json)
     game->num_opponents = GetNumOpponents(JSON(json, "players_at_table"));
 
     //Set the AI's hand and the community cards
-    GetCardArray(game->hand, JSON(json, "hand"));
-    GetCardArray(game->community, JSON(json, "community_cards"));
+    game->handsize = GetCardArray(game->hand, JSON(json, "hand"));
+    game->communitysize = GetCardArray(game->community, JSON(json, "community_cards"));
+
+    //Remove these cards from the deck
+    memset(game->deck, 1, sizeof(game->deck) / sizeof(game->deck[0]));
+    RemoveCardsFromDeck(game->deck, game->hand, game->handsize);
+    RemoveCardsFromDeck(game->deck, game->community, game->communitysize);
 }
