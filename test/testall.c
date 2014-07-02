@@ -4,6 +4,8 @@
 
 int main(int argc, char **argv)
 {
+    InitEvaluator();
+
     TestPokerAI();
     return 0;
 }
