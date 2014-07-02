@@ -8,6 +8,8 @@
 
 #define NUM_HAND        2
 #define NUM_COMMUNITY   5
+#define NUM_DECK        52
+#define MAX_OPPONENTS   10
 
 typedef enum phase
 {
@@ -27,9 +29,12 @@ typedef struct gamestate
     int call_amount;
     Phase phase;
     int hand[NUM_HAND];
+    int handsize;
     bool your_turn;
     int num_opponents;
     int community[NUM_COMMUNITY];
+    int communitysize;
+    bool deck[NUM_DECK];
 } GameState;
 
 /*
