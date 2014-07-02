@@ -34,7 +34,8 @@ typedef struct gamestate
     int num_opponents;
     int community[NUM_COMMUNITY];
     int communitysize;
-    bool deck[NUM_DECK];
+    //Cards are 1 indexed
+    bool deck[NUM_DECK + 1];
 } GameState;
 
 /*
