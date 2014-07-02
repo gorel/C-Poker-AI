@@ -38,18 +38,18 @@ cJSON *httpGetJSON(char *url);
 /*
  * Make an HTTP POST request to the specified URL
  * url: the url where the POST request will be made
- * params: the parameters to POST
+ * postfields: the POST data
  * return: the contents of the HTTP POST
  */
-char *httpPost(char *url, char **params);
+char *httpPost(char *url, char *postfields);
 
 /*
  * Make an HTTP POST request to the specified URL
  * and return the results as JSON
  * url: the url where the POST request will be made
- * params: the parameters to POST
+ * postfields: the POST data
  * return: the contents of the HTTP POST as a cJSON object
  */
-cJSON *httpPostJSON(char *url, char **params);
+cJSON *httpPostJSON(char *url, char *postfields);
 
 #endif
