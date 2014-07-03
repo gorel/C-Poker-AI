@@ -235,7 +235,7 @@ void *SimulateGames(void *_ai)
     //Only check the timer after every 5 simulations
     while (1)
     {
-        if (simulated % 5 == 0 && GetElapsedTime(&timer) > ai->timeout)
+        if (simulated % 1000 == 0 && GetElapsedTime(&timer) > ai->timeout)
         {
             break;
         }
