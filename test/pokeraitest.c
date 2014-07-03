@@ -1,5 +1,8 @@
 #include "tests.h"
 
+#define SECOND  1000
+#define MINUTE  (SECOND * 60)
+
 const char *gamestate1 = \
 "{"
 "\"name\": \"TEST_AI\","
@@ -90,10 +93,10 @@ const char *gamestate3 = \
 "\"lost_at\": null"
 "}";
 
-void TestPokerAI(void)
+void TestPokerAI(int timeout)
 {
     cJSON *json = NULL;
-    PokerAI *AI = CreatePokerAI(4, 1000);
+    PokerAI *AI = CreatePokerAI(4, timeout);
     SetLogging(AI, DEBUG, stderr);
 
     json = cJSON_Parse(gamestate1);
@@ -101,7 +104,7 @@ void TestPokerAI(void)
     GetBestAction(AI);
     WriteAction(AI, stdout);
     cJSON_Delete(json);
-
+/*
     json = cJSON_Parse(gamestate2);
     UpdateGameState(AI, json);
     GetBestAction(AI);
@@ -113,6 +116,6 @@ void TestPokerAI(void)
     GetBestAction(AI);
     WriteAction(AI, stdout);
     cJSON_Delete(json);
-
+*/
     DestroyPokerAI(AI);
 }
