@@ -45,4 +45,12 @@ typedef struct gamestate
  */
 void SetGameState(GameState *game, cJSON *json);
 
+/*
+ * Set the card array to the given JSON array
+ * cards: the int array of where to place the results
+ * json: a JSON array of card strings
+ * return: the number of cards in the array
+ */
+int GetCardArray(int *cards, cJSON *json);
+
 #endif

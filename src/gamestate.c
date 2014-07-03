@@ -98,7 +98,6 @@ int CardMaskFromString(char *card)
  * json: a JSON array of card strings
  * return: the number of cards in the array
  */
-static
 int GetCardArray(int *cards, cJSON *json)
 {
     int i;
