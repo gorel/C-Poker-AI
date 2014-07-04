@@ -279,14 +279,15 @@ int SimulateSingleGame(PokerAI *ai)
     }
 
     //Create a deck as a randomized queue data structure
-    int deck[52] = {0};
+    int deck[NUM_DECK] = {0};
     int decksize = 0;
-    for (int i = 0; i < NUM_DECK; i++)
+
+    //Cards are 1 indexed
+    for (int i = 1; i < NUM_DECK; i++)
     {
         if (game->deck[i])
         {
-            //Cards are 1 indexed
-            deck[decksize] = i + 1;
+            deck[decksize] = i;
             decksize++;
         }
     }
