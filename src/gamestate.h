@@ -8,7 +8,7 @@
 
 #define NUM_HAND        2
 #define NUM_COMMUNITY   5
-#define NUM_DECK        52
+#define NUM_DECK        53 //cards are 1-indexed
 #define MAX_OPPONENTS   10
 
 typedef enum phase
@@ -34,8 +34,7 @@ typedef struct gamestate
     int num_opponents;
     int community[NUM_COMMUNITY];
     int communitysize;
-    //Cards are 1 indexed
-    bool deck[NUM_DECK + 1];
+    bool deck[NUM_DECK];
 } GameState;
 
 /*

@@ -17,19 +17,19 @@
 static
 Phase GetPhase(char *phase)
 {
-    if (!strcmp(phase, "deal"))
+    if (!strcasecmp(phase, "deal"))
     {
         return DEAL;
     }
-    else if (!strcmp(phase, "flop"))
+    else if (!strcasecmp(phase, "flop"))
     {
         return FLOP;
     }
-    else if (!strcmp(phase, "turn"))
+    else if (!strcasecmp(phase, "turn"))
     {
         return TURN;
     }
-    else if (!strcmp(phase, "river"))
+    else if (!strcasecmp(phase, "river"))
     {
         return RIVER;
     }
