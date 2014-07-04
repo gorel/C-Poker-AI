@@ -2,6 +2,7 @@
 #define __TESTS_H__
 
 #include <string.h>
+#include <unistd.h>
 
 #include "action.h"
 #include "evaluator.h"
@@ -10,11 +11,20 @@
 #include "pokerai.h"
 #include "urlconnection.h"
 
-void TestAction(void);
-void TestEvaluator(void);
-void TestGameState(void);
-void TestTimer(void);
-void TestURLConnection(void);
-void TestPokerAI(int timeout);
+typedef struct testresult
+{
+    int failed;
+    int numtests;
+} TestResult;
+
+TestResult *CreateResult(int failed, int numtests);
+void DeleteResult(TestResult *results);
+
+TestResult *TestAction(void);
+TestResult *TestEvaluator(void);
+TestResult *TestGameState(void);
+TestResult *TestTimer(void);
+TestResult *TestURLConnection(void);
+TestResult *TestPokerAI(int timeout);
 
 #endif
