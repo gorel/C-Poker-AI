@@ -36,7 +36,7 @@ int scoreJSON(char *jsontext)
     return GetHandValue(cards, ARR_LEN);
 }
 
-void TestEvaluator(void)
+TestResult *TestEvaluator(void)
 {
     int numtests = 0;
     int failed = 0;
@@ -161,6 +161,7 @@ void TestEvaluator(void)
     }
     numtests++;
 
-    fprintf(stderr, "[EVALUATOR]\t\tpassed %d/%d\n", (numtests - failed), numtests);
     free(cards);
+    fprintf(stderr, "[EVALUATOR]\t\tpassed %d/%d\n", (numtests - failed), numtests);
+    return CreateResult(failed, numtests);
 }

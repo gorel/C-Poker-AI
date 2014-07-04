@@ -5,7 +5,7 @@
 #define BET_AMOUNT  500
 #define BET_RESULT  "action_name=bet&amount=500"
 
-void TestAction(void)
+TestResult *TestAction(void)
 {
     Action action;
     char *result;
@@ -40,4 +40,5 @@ void TestAction(void)
     numtests++;
 
     fprintf(stderr, "[ACTION]\t\tpassed %d/%d\n", (numtests - failed), numtests);
+    return CreateResult(failed, numtests);
 }
