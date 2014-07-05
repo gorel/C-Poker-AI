@@ -25,6 +25,6 @@ TestResult *TestEvaluator(void);
 TestResult *TestGameState(void);
 TestResult *TestTimer(void);
 TestResult *TestURLConnection(void);
-TestResult *TestPokerAI(int timeout);
+void TestPokerAI(int timeout);
 
 #endif
