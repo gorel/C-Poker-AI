@@ -141,7 +141,7 @@ char *GetBestAction(PokerAI *ai)
     SpawnMonteCarloThreads(ai);
     winprob = ((double) ai->games_won) / ai->games_simulated;
 
-    if (ai->loglevel == DEBUG)
+    if (ai->loglevel == LOGLEVEL_DEBUG)
     {
         fprintf(ai->logfile, "Simulated %d games.\n", ai->games_simulated);
         fprintf(ai->logfile, "Win probability: %lf\n", winprob);
@@ -211,7 +211,7 @@ void WriteAction(PokerAI *ai, FILE *file)
 static
 void SpawnMonteCarloThreads(PokerAI *ai)
 {
-    if (ai->loglevel == DEBUG)
+    if (ai->loglevel == LOGLEVEL_DEBUG)
     {
         fprintf(ai->logfile, "Spawning Monte Carlo threads.\n");
     }
@@ -228,7 +228,7 @@ void SpawnMonteCarloThreads(PokerAI *ai)
         pthread_join(ai->threads[i], NULL);
     }
 
-    if (ai->loglevel == DEBUG)
+    if (ai->loglevel == LOGLEVEL_DEBUG)
     {
         fprintf(ai->logfile, "All Monte Carlo threads finished.\n");
     }
@@ -245,7 +245,7 @@ void *SimulateGames(void *_ai)
     PokerAI *ai = (PokerAI *)_ai;
     Timer timer;
 
-    if (ai->loglevel == DEBUG)
+    if (ai->loglevel == LOGLEVEL_DEBUG)
     {
         fprintf(ai->logfile, "[Thread %u] starting\n", THREAD_ID);
     }
@@ -266,7 +266,7 @@ void *SimulateGames(void *_ai)
         simulated++;
     }
 
-    if (ai->loglevel == DEBUG)
+    if (ai->loglevel == LOGLEVEL_DEBUG)
     {
         fprintf(ai->logfile, "[Thread %u] done\t(simulated %d games)\n", THREAD_ID, simulated);
     }

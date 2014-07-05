@@ -13,8 +13,8 @@
 
 typedef enum loglevel
 {
-    STANDARD,
-    DEBUG
+    LOGLEVEL_STANDARD,
+    LOGLEVEL_DEBUG
 } LOGLEVEL;
 
 typedef struct pokerai
