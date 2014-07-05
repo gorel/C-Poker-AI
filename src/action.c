@@ -6,7 +6,7 @@
  */
 void ActionSetFold(Action *action)
 {
-    action->type = FOLD;
+    action->type = ACTION_FOLD;
     action->amount = 0;
 }
 
@@ -16,7 +16,7 @@ void ActionSetFold(Action *action)
  */
 void ActionSetCall(Action *action)
 {
-    action->type = CALL;
+    action->type = ACTION_CALL;
     action->amount = 0;
 }
 
@@ -27,7 +27,7 @@ void ActionSetCall(Action *action)
  */
 void ActionSetBet(Action *action, int amount)
 {
-    action->type = BET;
+    action->type = ACTION_BET;
     action->amount = amount;
 }
 
@@ -39,15 +39,15 @@ char *ActionGetString(Action *action)
 {
     switch (action->type)
     {
-    case FOLD:
+    case ACTION_FOLD:
         sprintf(action->string, "action_name=fold");
         break;
 
-    case CALL:
+    case ACTION_CALL:
         sprintf(action->string, "action_name=call");
         break;
 
-    case BET:
+    case ACTION_BET:
         sprintf(action->string, "action_name=bet&amount=%d", action->amount);
         break;
 

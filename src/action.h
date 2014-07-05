@@ -1,14 +1,15 @@
 #ifndef __ACTION_H__
 #define __ACTION_H__
 
+#include <stdbool.h>
 #include <stdio.h>
 
 //Enum representing the possible action types
 typedef enum action_type
 {
-    FOLD,
-    CALL,
-    BET,
+    ACTION_FOLD,
+    ACTION_CALL,
+    ACTION_BET,
     ACTION_UNSET
 } ActionType;
 
@@ -16,6 +17,7 @@ typedef enum action_type
 typedef struct action
 {
     ActionType type;
+    bool bluff;
     int amount;
 
     char string[256];
