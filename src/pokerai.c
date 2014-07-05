@@ -51,6 +51,14 @@ static
 int BestOpponentHand(int **opponents, int numopponents, int numcards);
 
 /*
+ * Set the AI's action given its expected gain
+ * ai: the AI to set the action for
+ * expectedgain: the expected gain of the hand
+ */
+static
+void MakeDecision(PokerAI *ai, double expectedgain);
+
+/*
  * Create a new PokerAI
  *
  * num_threads: number of threads this AI should use
@@ -124,7 +132,9 @@ bool MyTurn(PokerAI *ai)
  */
 char *GetBestAction(PokerAI *ai)
 {
-    double winprob = 0;
+    double winprob;
+    double potodds;
+    double expectedgain;
     ai->games_won = 0;
     ai->games_simulated = 0;
 
@@ -137,21 +147,19 @@ char *GetBestAction(PokerAI *ai)
         fprintf(ai->logfile, "Win probability: %lf\n", winprob);
     }
 
-    //TODO: Make a good AI
-    if (winprob > 0.5)
+    //Set the pot odds
+    if (ai->game.call_amount > 0)
     {
-        ai->action.type = BET;
-        ai->action.amount = ai->game.stack * winprob;
-    }
-    else if (winprob > 0.25)
-    {
-        ai->action.type = CALL;
+        potodds = (double) ai->game.call_amount / (ai->game.call_amount + ai->game.current_bet);
     }
     else
     {
-        ai->action.type = FOLD;
+        //There is nothing to be lost by calling
+        potodds = 0.1;
     }
 
+    expectedgain = winprob / potodds;
+    MakeDecision(ai, expectedgain);
     return ActionGetString(&ai->action);
 }
 
@@ -164,16 +172,30 @@ void WriteAction(PokerAI *ai, FILE *file)
 {
     switch(ai->action.type)
     {
-    case FOLD:
-        fprintf(file, "ACTION:\tFOLDING\n");
+    case ACTION_FOLD:
+        fprintf(file, "ACTION:\tACTION_FOLDING\n");
         break;
 
-    case CALL:
-        fprintf(file, "ACTION:\tCALLING\n");
+    case ACTION_CALL:
+        if (ai->action.bluff)
+        {
+            fprintf(file, "ACTION:\tACTION_CALLING (BLUFF)\n");
+        }
+        else
+        {
+            fprintf(file, "ACTION:\tACTION_CALLING\n");
+        }
         break;
 
-    case BET:
-        fprintf(file, "ACTION:\tBETTING %d\n", ai->action.amount);
+    case ACTION_BET:
+        if (ai->action.bluff)
+        {
+            fprintf(file, "ACTION:\tACTION_BETTING %d (BLUFF)\n", ai->action.amount);
+        }
+        else
+        {
+            fprintf(file, "ACTION:\tACTION_BETTING %d\n", ai->action.amount);
+        }
         break;
 
     default:
@@ -384,4 +406,85 @@ int BestOpponentHand(int **opponents, int numopponents, int numcards)
     }
 
     return max;
+}
+
+/*
+ * Set the AI's action given its expected gain
+ * ai: the AI to set the action for
+ * expectedgain: the expected gain of the hand
+ */
+static
+void MakeDecision(PokerAI *ai, double expectedgain)
+{
+    int randnum = rand() % 100;
+    int maxbet = (int)(ai->game.stack / 1.75) - (randnum / 2);
+
+    //Don't bet too much on a bluff
+    int bluffbet = randnum * maxbet / 100 / 2;
+
+    if (expectedgain < 0.8)
+    {
+        if (randnum < 95)
+        {
+            ai->action.type = ACTION_FOLD;
+        }
+        else
+        {
+            ai->action.type = ACTION_BET;
+            ai->action.bluff = true;
+            ai->action.amount = bluffbet;
+        }
+    }
+    else if (expectedgain < 1.0)
+    {
+        if (randnum < 80)
+        {
+            ai->action.type = ACTION_FOLD;
+        }
+        else if (randnum < 5)
+        {
+            ai->action.type = ACTION_CALL;
+            ai->action.bluff = true;
+        }
+        else
+        {
+            ai->action.type = ACTION_BET;
+            ai->action.bluff = true;
+            ai->action.amount = bluffbet;
+        }
+    }
+    else if (expectedgain < 1.3)
+    {
+        if (randnum < 60)
+        {
+            ai->action.type = ACTION_CALL;
+            ai->action.bluff = false;
+        }
+        else
+        {
+            ai->action.type = ACTION_BET;
+            ai->action.bluff = false;
+            ai->action.amount = maxbet;
+        }
+    }
+    else
+    {
+        if (randnum < 30)
+        {
+            ai->action.type = ACTION_CALL;
+            ai->action.bluff = false;
+        }
+        else
+        {
+            ai->action.type = ACTION_BET;
+            ai->action.bluff = false;
+            ai->action.amount = maxbet;
+        }
+    }
+
+    //Don't fold if it's free to play
+    if ((ai->action.type == ACTION_FOLD) && (ai->game.call_amount == 0))
+    {
+        ai->action.type = ACTION_CALL;
+    }
 }
