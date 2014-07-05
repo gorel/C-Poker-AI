@@ -13,11 +13,11 @@
 
 typedef enum phase
 {
-    DEAL,
-    FLOP,
-    TURN,
-    RIVER,
-    ERROR
+    PHASE_DEAL,
+    PHASE_FLOP,
+    PHASE_TURN,
+    PHASE_RIVER,
+    PHASE_ERROR
 } Phase;
 
 typedef struct gamestate

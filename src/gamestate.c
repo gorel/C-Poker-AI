@@ -19,23 +19,23 @@ Phase GetPhase(char *phase)
 {
     if (!strcasecmp(phase, "deal"))
     {
-        return DEAL;
+        return PHASE_DEAL;
     }
     else if (!strcasecmp(phase, "flop"))
     {
-        return FLOP;
+        return PHASE_FLOP;
     }
     else if (!strcasecmp(phase, "turn"))
     {
-        return TURN;
+        return PHASE_TURN;
     }
     else if (!strcasecmp(phase, "river"))
     {
-        return RIVER;
+        return PHASE_RIVER;
     }
     else
     {
-        return ERROR;
+        return PHASE_ERROR;
     }
 }
 
