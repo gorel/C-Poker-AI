@@ -53,10 +53,11 @@ int BestOpponentHand(int **opponents, int numopponents, int numcards);
 /*
  * Set the AI's action given its expected gain
  * ai: the AI to set the action for
+ * winprob: the AI's probability of winning the hand
  * expectedgain: the expected gain of the hand
  */
 static
-void MakeDecision(PokerAI *ai, double expectedgain);
+void MakeDecision(PokerAI *ai, double winprob, double expectedgain);
 
 /*
  * Create a new PokerAI
@@ -159,7 +160,9 @@ char *GetBestAction(PokerAI *ai)
     }
 
     expectedgain = winprob / potodds;
-    MakeDecision(ai, expectedgain);
+    printf("Win probability:\t%.2lf%%\n", winprob * 100);
+    printf("Rate of return:\t\t%.2lf\n", expectedgain);
+    MakeDecision(ai, winprob, expectedgain);
     return ActionGetString(&ai->action);
 }
 
@@ -173,33 +176,33 @@ void WriteAction(PokerAI *ai, FILE *file)
     switch(ai->action.type)
     {
     case ACTION_FOLD:
-        fprintf(file, "ACTION:\tACTION_FOLDING\n");
+        fprintf(file, "ACTION:\tFOLDING\n");
         break;
 
     case ACTION_CALL:
         if (ai->action.bluff)
         {
-            fprintf(file, "ACTION:\tACTION_CALLING (BLUFF)\n");
+            fprintf(file, "ACTION:\tCALLING (BLUFF)\n");
         }
         else
         {
-            fprintf(file, "ACTION:\tACTION_CALLING\n");
+            fprintf(file, "ACTION:\tCALLING\n");
         }
         break;
 
     case ACTION_BET:
         if (ai->action.bluff)
         {
-            fprintf(file, "ACTION:\tACTION_BETTING %d (BLUFF)\n", ai->action.amount);
+            fprintf(file, "ACTION:\tBETTING %d (BLUFF)\n", ai->action.amount);
         }
         else
         {
-            fprintf(file, "ACTION:\tACTION_BETTING %d\n", ai->action.amount);
+            fprintf(file, "ACTION:\tBETTING %d\n", ai->action.amount);
         }
         break;
 
     default:
-        fprintf(file, "No action set\n");
+        fprintf(file, "!! No action set !!\n");
         break;
     }
 }
@@ -411,10 +414,11 @@ int BestOpponentHand(int **opponents, int numopponents, int numcards)
 /*
  * Set the AI's action given its expected gain
  * ai: the AI to set the action for
+ * winprob: the AI's probability of winning the hand
  * expectedgain: the expected gain of the hand
  */
 static
-void MakeDecision(PokerAI *ai, double expectedgain)
+void MakeDecision(PokerAI *ai, double winprob, double expectedgain)
 {
     int randnum = rand() % 100;
     int maxbet = (int)(ai->game.stack / 1.75) - (randnum / 2);
@@ -422,7 +426,7 @@ void MakeDecision(PokerAI *ai, double expectedgain)
     //Don't bet too much on a bluff
     int bluffbet = randnum * maxbet / 100 / 2;
 
-    if (expectedgain < 0.8)
+    if (expectedgain < 0.8 && winprob < 0.8)
     {
         if (randnum < 95)
         {
@@ -435,7 +439,7 @@ void MakeDecision(PokerAI *ai, double expectedgain)
             ai->action.amount = bluffbet;
         }
     }
-    else if (expectedgain < 1.0)
+    else if (expectedgain < 1.0 && winprob < 0.85)
     {
         if (randnum < 80)
         {
@@ -453,7 +457,7 @@ void MakeDecision(PokerAI *ai, double expectedgain)
             ai->action.amount = bluffbet;
         }
     }
-    else if (expectedgain < 1.3)
+    else if (expectedgain < 1.3 && winprob < 0.9)
     {
         if (randnum < 60)
         {
@@ -467,7 +471,7 @@ void MakeDecision(PokerAI *ai, double expectedgain)
             ai->action.amount = maxbet;
         }
     }
-    else
+    else //either large rate of return, or win probability > 90%
     {
         if (randnum < 30)
         {
