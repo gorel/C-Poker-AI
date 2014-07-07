@@ -13,7 +13,8 @@
 
 typedef enum loglevel
 {
-    LOGLEVEL_STANDARD,
+    LOGLEVEL_NONE,
+    LOGLEVEL_INFO,
     LOGLEVEL_DEBUG
 } LOGLEVEL;
 
