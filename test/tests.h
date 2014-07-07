@@ -20,11 +20,28 @@ typedef struct testresult
 TestResult *CreateResult(int failed, int numtests);
 void DeleteResult(TestResult *results);
 
+/*
+ * Generate a new random game state
+ * return: a malloced char * to a new game state
+ */
+char *GenerateGameState(void);
+
+/*
+ * Test each component of the poker AI
+ */
 TestResult *TestAction(void);
 TestResult *TestEvaluator(void);
 TestResult *TestGameState(void);
 TestResult *TestTimer(void);
 TestResult *TestURLConnection(void);
+
+/*
+ * Test the poker AI's logic by creating random games
+ * and evaluating its choices.
+ * This test should be manually observed to fine-tune
+ * the AI's choice thresholds.
+ * timeout: how long the AI will simulate games before making a decision
+ */
 void TestPokerAI(int timeout);
 
 #endif
