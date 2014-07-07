@@ -2,6 +2,8 @@
 
 #include "tests.h"
 
+#define TIMEOUT     1000
+
 int main(int argc, char **argv)
 {
     InitEvaluator();
@@ -11,13 +13,9 @@ int main(int argc, char **argv)
     int failed = 0;
     int numtests = 0;
 
-    int timeout;
+    //Any argument will run the component testing suite
+    //instead of the poker AI test
     if (argc == 2)
-    {
-        timeout = atoi(argv[1]);
-        TestPokerAI(timeout);
-    }
-    else
     {
         result = TestAction();
         failed += result->failed;
@@ -49,6 +47,10 @@ int main(int argc, char **argv)
         printf("||PASSED|FAILED||\n");
         printf("||%6d|%6d||\n", (numtests - failed), failed);
         printf("=================\n");
+    }
+    else
+    {
+        TestPokerAI(TIMEOUT);
     }
 
     EndConnectionSession();
