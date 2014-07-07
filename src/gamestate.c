@@ -9,6 +9,15 @@
 #define JSON_ARRAY_ELEM(json, i) \
     cJSON_GetArrayItem(json, i)
 
+//Maps an integer to a card string
+char *CARDS[] = {"XX",                                                  \
+"2S", "2C", "2D", "2H", "3S", "3C", "3D", "3H", "4S", "4C", "4D", "4H", \
+"5S", "5C", "5D", "5H", "6S", "6C", "6D", "6H", "7S", "7C", "7D", "7H", \
+"8S", "8C", "8D", "8H", "9S", "9C", "9D", "9H", "TS", "TC", "TD", "TH", \
+"JS", "JC", "JD", "JH", "QS", "QC", "QD", "QH", "KS", "KC", "KD", "KH", \
+"AS", "AC", "AD", "AH"                                                  \
+};
+
 /*
  * Convert a string phase to the enum phase type
  * phase: the string representation of the current phase
@@ -93,25 +102,6 @@ int CardMaskFromString(char *card)
 }
 
 /*
- * Set the card array to the given JSON array
- * cards: the int array of where to place the results
- * json: a JSON array of card strings
- * return: the number of cards in the array
- */
-int GetCardArray(int *cards, cJSON *json)
-{
-    int i;
-
-    for (i = 0; i < cJSON_GetArraySize(json); i++)
-    {
-        cards[i] = CardMaskFromString(
-                JSON_ARRAY_ELEM(json, i)->valuestring);
-    }
-
-    return cJSON_GetArraySize(json);
-}
-
-/*
  * Remove cards from the deck that have already been seen in play
  * deck: the deck to remove cards from
  * cards: the cards to remove
@@ -149,6 +139,25 @@ int GetNumOpponents(cJSON *players)
 }
 
 /*
+ * Set the card array to the given JSON array
+ * cards: the int array of where to place the results
+ * json: a JSON array of card strings
+ * return: the number of cards in the array
+ */
+int GetCardArray(int *cards, cJSON *json)
+{
+    int i;
+
+    for (i = 0; i < cJSON_GetArraySize(json); i++)
+    {
+        cards[i] = CardMaskFromString(
+                JSON_ARRAY_ELEM(json, i)->valuestring);
+    }
+
+    return cJSON_GetArraySize(json);
+}
+
+/*
  * Set the game state according to the given JSON
  * game: the game state to set
  * json: a JSON representation of the game state
@@ -172,4 +181,41 @@ void SetGameState(GameState *game, cJSON *json)
     memset(game->deck, 1, sizeof(game->deck) / sizeof(game->deck[0]));
     RemoveCardsFromDeck(game->deck, game->hand, game->handsize);
     RemoveCardsFromDeck(game->deck, game->community, game->communitysize);
+}
+
+/*
+ * Print the AI's cards to the given file
+ * game: the game state containing the cards
+ * logfile: the file for logging output
+ */
+void PrintCards(GameState *game, FILE *logfile)
+{
+    fprintf(logfile, "Hand\tCommunity\n");
+    
+    //Print the hand
+    if (game->handsize > 0)
+    {
+        fprintf(logfile, "%s", CARDS[game->hand[0]]);
+        for (int i = 1; i < game->handsize; i++)
+        {
+            fprintf(logfile, " %s", CARDS[game->hand[i]]);
+        }
+    }
+    else
+    {
+        fprintf(logfile, "\t");
+    }
+    fprintf(logfile, "\t");
+
+    //Print the community cards
+    if (game->communitysize > 0)
+    {
+        fprintf(logfile, "%s", CARDS[game->community[0]]);
+        for (int i = 1; i < game->communitysize; i++)
+        {
+            fprintf(logfile, " %s", CARDS[game->community[i]]); 
+        }
+    }
+    fprintf(logfile, "\n");
+
 }

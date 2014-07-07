@@ -2,6 +2,7 @@
 #define __GAMESTATE_H__
 
 #include <stdbool.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "cJSON.h"
@@ -51,5 +52,12 @@ void SetGameState(GameState *game, cJSON *json);
  * return: the number of cards in the array
  */
 int GetCardArray(int *cards, cJSON *json);
+
+/*
+ * Print the AI's cards to the given file
+ * game: the game state containing the cards
+ * logfile: the file for logging output
+ */
+void PrintCards(GameState *game, FILE *logfile);
 
 #endif
