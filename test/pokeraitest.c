@@ -1,7 +1,14 @@
 #include "tests.h"
 
-#define SECOND  1000
-#define MINUTE  (SECOND * 60)
+#define MAXBUF      4096
+#define SMALLBUF    128
+#define SECOND      1000
+#define MINUTE      (SECOND * 60)
+
+char *deck[] = {"2H", "3H", "4H", "5H", "6H", "7H", "8H", "9H", "TH", "JH", "QH", "KH", "AH", \
+                "2C", "3C", "4C", "5C", "6C", "7C", "8C", "9C", "TC", "JC", "QC", "KC", "AC", \
+                "2D", "3D", "4D", "5D", "6D", "7D", "8D", "9D", "TD", "JD", "QD", "KD", "AD", \
+                "2S", "3S", "4S", "5S", "6S", "7S", "8S", "9S", "TS", "JS", "QS", "KS", "AS"  };
 
 const char *gamestate1 = \
 "{"
@@ -129,6 +136,106 @@ const char *gamestate4 = \
 "\"lost_at\": null"
 "}";
 
+/*
+ * Shuffle the global deck array
+ * Uses the Fisher-Yates shuffle algorithm
+ */
+void ShuffleDeck(void)
+{
+    int size = sizeof(deck) / sizeof(deck[0]);
+    for (int i = 1; i < size; i++)
+    {
+        int swap = rand() % i;
+
+        char *temp = deck[i];
+        deck[i] = deck[swap];
+        deck[swap] = temp;
+    }
+}
+
+/*
+ * Generate a new random game state
+ * return: a malloced char * to a new game state
+ */
+static
+char *GenerateGameState(void)
+{
+    char state[MAXBUF];
+    char hand[MAXBUF];
+    char community[MAXBUF];
+    char betting_phase[SMALLBUF];
+    char cardstr[SMALLBUF];
+    char other_players[MAXBUF];
+    char playerstr[MAXBUF];
+    char *handcards[NUM_HAND];
+    char *commcards[NUM_COMMUNITY];
+
+    char *ptr = state;
+
+    ShuffleDeck();
+    int deckindex = 0;
+
+    int initialstack = rand() % 9000 + 1000;
+    int stack = rand() % initialstack + 250;
+    int currentbet = initialstack - stack;
+    int call_amount = rand() % stack;
+    //Generate 3 to 6 community cards
+    int num_community = rand() % 3 + 3;
+    int total_players_remaining = rand() % 5 + 1;
+    int oppinitialstack;
+    int oppstack;
+    int oppcurrentbet;
+
+    //Generate hand cards
+    handcards[0] = deck[deckindex++];
+    handcards[1] = deck[deckindex++];
+    sprintf(hand, "\"hand\": [\"%s\", \"%s\"],", handcards[0], handcards[1]);
+
+    //Generate community cards
+    sprintf(community, "\"community\": [");
+    for (int i = 0; i < num_community - 1; i++)
+    {
+        commcards[i] = deck[deckindex++];
+        sprintf(cardstr, "\"%s\",", commcards[i]);
+        strcat(community, cardstr);
+    }
+
+    //Generate last community card
+    commcards[num_community - 1] = deck[deckindex++];
+    sprintf(cardstr, "\"%s\"],", commcards[num_community - 1]);
+    strcat(community, cardstr);
+
+    //Generate opponents
+    sprintf(other_players, "\"players_at_table\": [{");
+    for (int i = 0; i < total_players_remaining - 1; i++)
+    {
+        oppinitialstack = rand() % 9000 + 1000;
+        oppstack = rand() % oppinitialstack + 250;
+        oppcurrentbet = oppinitialstack - oppstack;
+        sprintf(playerstr, "\'initial_stack\": %d,\"current_bet\": %d,\"stack\": %d,\"folded\": false},{",oppinitialstack, oppstack, oppcurrentbet);
+        strcat(other_players, playerstr);
+
+    }
+
+    //Generate last opponent
+    oppinitialstack = rand() % 9000 + 1000;
+    oppstack = rand() % oppinitialstack + 250;
+    oppcurrentbet = oppinitialstack - oppstack;
+    sprintf(playerstr, "\'initial_stack\": %d,\"current_bet\": %d,\"stack\": %d,\"folded\": false}],",oppinitialstack, oppstack, oppcurrentbet);
+    strcat(other_players, playerstr);
+
+    sprintf(ptr, "{\"name\": \"TEST_AI\",\"your_turn\": \"true\",");
+    ptr += strlen("{\"name\": \"TEST_AI\",\"your_turn\": \"true\",");
+
+
+    sprintf(ptr, "\"table_id\": 123,\"round_id\": 100,\"lost_at\": null}");
+    return strdup(state);
+}
+
+/*
+ * Print out the hand and community cards from the given json
+ * json: the json representing a game state
+ */
 static
 void printcards(cJSON *json)
 {
@@ -160,7 +267,7 @@ void TestPokerAI(int timeout)
     cJSON *json = NULL;
     PokerAI *AI = CreatePokerAI(4, timeout);
     FILE *log = fopen("log.txt", "w");
-    SetLogging(AI, DEBUG, log);
+    SetLogging(AI, LOGLEVEL_DEBUG, log);
 
     printf("***GREAT HAND***\n");
     json = cJSON_Parse(gamestate1);

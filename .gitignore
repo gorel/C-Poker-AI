@@ -2,3 +2,6 @@
 pokerclient
 testall
 HANDRANKS.DAT
+
+# Ignore logging files
+log.txt
