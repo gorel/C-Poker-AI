@@ -44,4 +44,10 @@ TestResult *TestURLConnection(void);
  */
 void TestPokerAI(int timeout);
 
+/*
+ * Test the poker AI's logic with the specified number of random trials
+ * numtrials: the number of hands to play
+ */
+void TestAILogic(int numtrials);
+
 #endif
