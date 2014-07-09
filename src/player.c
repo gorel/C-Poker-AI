@@ -22,7 +22,7 @@ Player *CreatePlayer(cJSON *playerjson)
     int stack = JSON_INT(playerjson, "stack");
     bool folded = JSON_INT(playerjson, "folded");
 
-    player->name = strdup(name);
+    strncpy(player->name, name, MAX_NAME_LEN);
     player->initial_stack = initial_stack;
     player->current_bet = current_bet;
     player->stack = stack;
@@ -39,6 +39,5 @@ void DestroyPlayer(Player *player)
 {
     if (!player) return;
 
-    free(player->name);
     free(player);
 }

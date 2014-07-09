@@ -1,7 +1,7 @@
 TARGET	= pokerclient
 CC		= gcc
 LINKER	= gcc -o
-CFLAGS	= -Wall -Werror -pedantic -std=gnu99 -g
+CFLAGS	= -Wall -Werror -pedantic -std=gnu99 -g -O3 -Wno-unused-result
 CLIBS	= -lcurl -lm -lpthread
 
 SRCDIR	= src

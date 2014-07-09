@@ -125,26 +125,35 @@ static
 void SetGameOpponents(GameState *game, cJSON *players)
 {
     int playing = 0;
-    for (int i = 0; i < cJSON_GetArraySize(players); i++)
+    char *name;
+    int initial_stack;
+    int stack;
+    int current_bet;
+    bool folded;
+
+    for (int i = 0; i < cJSON_GetArraySize(players) && i < MAX_OPPONENTS; i++)
     {
         cJSON *player = JSON_ARRAY_ELEM(players, i);
-        game->opponents[i] = CreatePlayer(player);
+        name = JSON_STRING(player, "player_name");
+        initial_stack = JSON_INT(player, "initial_stack");
+        stack = JSON_INT(player, "stack");
+        current_bet = JSON_INT(player, "current_bet");
+        folded = JSON_INT(player, "folded");
+
+        strncpy(game->opponents[i].name, name, MAX_NAME_LEN);
+        game->opponents[i].initial_stack = initial_stack;
+        game->opponents[i].stack = stack;
+        game->opponents[i].current_bet = current_bet;
+        game->opponents[i].folded = folded;
+
+        if (!folded)
+        {
+            playing++;
+        }
     }
 
     game->num_opponents = cJSON_GetArraySize(players);
     game->num_playing = playing;
-}
-
-/*
- * Free any old memory associated with the game state
- * game: the game state to free memory for
- */
-void FreeStaleGameStateMemory(GameState *game)
-{
-    for (int i = 0; i < game->num_opponents; i++)
-    {
-        DestroyPlayer(game->opponents[i]);
-    }
 }
 
 /*
@@ -173,9 +182,6 @@ int GetCardArray(int *cards, cJSON *json)
  */
 void SetGameState(GameState *game, cJSON *json)
 {
-    //Free any memory that should be overwritten
-    FreeStaleGameStateMemory(game);
-
     game->round_id = JSON_INT(json, "round_id");
     game->initial_stack = JSON_INT(json, "initial_stack");
     game->stack = JSON_INT(json, "stack");
@@ -241,5 +247,17 @@ void PrintCards(GameState *game, FILE *logfile)
  */
 void PrintOpponents(GameState *game, FILE *logfile)
 {
-
+    fprintf(logfile, "Opponents:\n");
+    for (int i = 0; i < game->num_opponents; i++)
+    {
+        Player *player = &game->opponents[i];
+        if (player->folded)
+        {
+            printf("\t[FOLDED] %s: initial_stack=%d, stack=%d, current_bet=%d\n", player->name, player->initial_stack, player->stack, player->current_bet);
+        }
+        else
+        {
+            printf("\t%s: initial_stack=%d, stack=%d, current_bet=%d\n", player->name, player->initial_stack, player->stack, player->current_bet);
+        }
+    }
 }

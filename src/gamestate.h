@@ -33,7 +33,7 @@ typedef struct gamestate
     int hand[NUM_HAND];
     int handsize;
     bool your_turn;
-    Player *opponents[MAX_OPPONENTS];
+    Player opponents[MAX_OPPONENTS];
     int num_opponents;
     int num_playing;
     int community[NUM_COMMUNITY];

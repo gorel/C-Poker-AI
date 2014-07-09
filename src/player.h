@@ -7,9 +7,11 @@
 
 #include "cJSON.h"
 
+#define MAX_NAME_LEN    20
+
 typedef struct player
 {
-    char *name;
+    char name[MAX_NAME_LEN + 1];
     int initial_stack;
     int current_bet;
     int stack;

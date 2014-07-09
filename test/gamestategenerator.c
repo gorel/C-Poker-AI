@@ -133,11 +133,11 @@ const char *gamestate4 = \
  * Shuffle the given array
  * Uses the Fisher-Yates shuffle algorithm
  * arr: the array to shuffle
+ * size: the size of the array
  */
 static
-void Shuffle(char **arr)
+void Shuffle(char **arr, int size)
 {
-    int size = sizeof(arr) / sizeof(arr[0]);
     for (int i = 1; i < size; i++)
     {
         int swap = rand() % i;
@@ -211,6 +211,8 @@ char *GenerateGameState(
                 "2D", "3D", "4D", "5D", "6D", "7D", "8D", "9D", "TD", "JD", "QD", "KD", "AD", \
                 "2S", "3S", "4S", "5S", "6S", "7S", "8S", "9S", "TS", "JS", "QS", "KS", "AS"  };
 
+    char *names[] = {"Alice", "Bob", "Charlie", "Dave", "Eve", "Freddy", "Gary", "Harry", "Isabel", "Janice", "Kate", "Logan", "Mike", "Oliver", "Pam", "Quinn", "Ryan", "Steve", "Thomas", "Ulysses", "Veronica", "Will", "X-Ray", "Yvette", "Zach"};
+
     char state[MAXBUF];
     char handstr[MAXBUF];
     char communitystr[MAXBUF];
@@ -226,8 +228,13 @@ char *GenerateGameState(
 
     char *ptr = state;
 
-    Shuffle(deck);
+    int decklen = sizeof(deck) / sizeof(deck[0]);
+    int nameslen = sizeof(names) / sizeof(names[0]);
+
+    Shuffle(deck, decklen);
+    Shuffle(names, nameslen);
     int deckindex = 0;
+    int nameindex = 0;
 
     if (!initialstack)
     {
@@ -319,7 +326,7 @@ char *GenerateGameState(
 
         if (!oppstack)
         {
-            _oppstack = rand() % oppinitialstack + 250;
+            _oppstack = rand() % _oppinitialstack + 250;
         }
         else
         {
@@ -328,14 +335,14 @@ char *GenerateGameState(
 
         if (!oppcurrentbet)
         {
-            _oppcurrentbet = oppinitialstack - oppstack;
+            _oppcurrentbet = _oppinitialstack - _oppstack;
         }
         else
         {
             _oppcurrentbet = oppcurrentbet;
         }
 
-        sprintf(playerstr, "   \"initial_stack\": %d,\"current_bet\": %d,\"stack\": %d,\"folded\": false   },\n\t{",_oppinitialstack, _oppstack, _oppcurrentbet);
+        sprintf(playerstr, "   \"player_name\": \"%s\",\"initial_stack\": %d,\"current_bet\": %d,\"stack\": %d,\"folded\": false   },\n\t{", names[nameindex++], _oppinitialstack, _oppstack, _oppcurrentbet);
         strcat(other_players, playerstr);
     }
 
@@ -351,7 +358,7 @@ char *GenerateGameState(
 
     if (!oppstack)
     {
-        _oppstack = rand() % oppinitialstack + 250;
+        _oppstack = rand() % _oppinitialstack + 250;
     }
     else
     {
@@ -360,14 +367,14 @@ char *GenerateGameState(
 
     if (!oppcurrentbet)
     {
-        _oppcurrentbet = oppinitialstack - oppstack;
+        _oppcurrentbet = _oppinitialstack - _oppstack;
     }
     else
     {
         _oppcurrentbet = oppcurrentbet;
     }
 
-    sprintf(playerstr, "   \"initial_stack\": %d,\"current_bet\": %d,\"stack\": %d,\"folded\": false   }\n\t],\n", _oppinitialstack, _oppstack, _oppcurrentbet);
+    sprintf(playerstr, "   \"player_name\": \"%s\",\"initial_stack\": %d,\"current_bet\": %d,\"stack\": %d,\"folded\": false   }\n\t],\n", names[nameindex++], _oppinitialstack, _oppstack, _oppcurrentbet);
     strcat(other_players, playerstr);
 
     //////////////////////////////////////
