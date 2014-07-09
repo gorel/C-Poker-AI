@@ -56,7 +56,7 @@ void TestPokerAI(int timeout)
     printf("\n");
 
     printf("***RANDOM HAND***\n");
-    gamestate = GenerateGameState();
+    gamestate = GenerateRandomGameState();
     json = cJSON_Parse(gamestate);
     UpdateGameState(AI, json);
     GetBestAction(AI);

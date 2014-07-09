@@ -117,25 +117,34 @@ void RemoveCardsFromDeck(bool *deck, int *cards, int numcards)
 }
 
 /*
- * Find the number of opponents who haven't folded yet
- * players: a JSON array of the players at the table
- * return: the number of players who haven't folded yet
+ * Set the opponents for the game
+ * game: the gamestate to set the opponents for
+ * players: cJSON representing the players at the table
  */
 static
-int GetNumOpponents(cJSON *players)
+void SetGameOpponents(GameState *game, cJSON *players)
 {
-    int i;
     int playing = 0;
-    for (i = 0; i < cJSON_GetArraySize(players); i++)
+    for (int i = 0; i < cJSON_GetArraySize(players); i++)
     {
         cJSON *player = JSON_ARRAY_ELEM(players, i);
-        if (!JSON_INT(player, "folded"))
-        {
-            playing++;
-        }
+        game->opponents[i] = CreatePlayer(player);
     }
 
-    return playing;
+    game->num_opponents = cJSON_GetArraySize(players);
+    game->num_playing = playing;
+}
+
+/*
+ * Free any old memory associated with the game state
+ * game: the game state to free memory for
+ */
+void FreeStaleGameStateMemory(GameState *game)
+{
+    for (int i = 0; i < game->num_opponents; i++)
+    {
+        DestroyPlayer(game->opponents[i]);
+    }
 }
 
 /*
@@ -164,6 +173,9 @@ int GetCardArray(int *cards, cJSON *json)
  */
 void SetGameState(GameState *game, cJSON *json)
 {
+    //Free any memory that should be overwritten
+    FreeStaleGameStateMemory(game);
+
     game->round_id = JSON_INT(json, "round_id");
     game->initial_stack = JSON_INT(json, "initial_stack");
     game->stack = JSON_INT(json, "stack");
@@ -171,7 +183,9 @@ void SetGameState(GameState *game, cJSON *json)
     game->call_amount = JSON_INT(json, "call_amount");
     game->phase = GetPhase(JSON_STRING(json, "betting_phase"));
     game->your_turn = JSON_INT(json, "your_turn");
-    game->num_opponents = GetNumOpponents(JSON(json, "players_at_table"));
+
+    //Set the AI's list of opponents
+    SetGameOpponents(game, JSON(json, "players_at_table"));
 
     //Set the AI's hand and the community cards
     game->handsize = GetCardArray(game->hand, JSON(json, "hand"));
@@ -217,5 +231,15 @@ void PrintCards(GameState *game, FILE *logfile)
         }
     }
     fprintf(logfile, "\n");
+
+}
+
+/*
+ * Print the current opponents at the table and their information
+ * game: the game state containing the players
+ * logfile: the file for logging output
+ */
+void PrintOpponents(GameState *game, FILE *logfile)
+{
 
 }

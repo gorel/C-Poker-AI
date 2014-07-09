@@ -97,7 +97,7 @@ TestResult *TestGameState(void)
     }
     numtests++;
 
-    if (game.phase != FLOP)
+    if (game.phase != PHASE_FLOP)
     {
         fprintf(stderr, "Failed phase parse\n");
         failed++;

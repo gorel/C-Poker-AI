@@ -28,7 +28,7 @@ void TestAILogic(int numtrials)
 
     for (int i = 0; i < numtrials; i++)
     {
-        gamestate = GenerateGameState();
+        gamestate = GenerateRandomGameState();
         json = cJSON_Parse(gamestate);
         UpdateGameState(AI, json);
         GetBestAction(AI);

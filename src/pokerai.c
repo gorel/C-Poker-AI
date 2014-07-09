@@ -76,6 +76,9 @@ PokerAI *CreatePokerAI(int num_threads, int timeout)
     ai->threads = malloc(sizeof(pthread_t) * num_threads);
     pthread_mutex_init(&ai->mutex, NULL);
 
+    //Set the initial state to no other players
+    ai->game.num_opponents = 0;
+
     return ai;
 }
 
@@ -119,6 +122,7 @@ void UpdateGameState(PokerAI *ai, cJSON *new_state)
     if (ai->loglevel >= LOGLEVEL_INFO)
     {
         PrintCards(&ai->game, ai->logfile);
+        PrintOpponents(&ai->game, ai->logfile);
     }
 }
 

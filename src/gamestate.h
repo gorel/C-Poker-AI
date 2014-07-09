@@ -6,6 +6,7 @@
 #include <string.h>
 
 #include "cJSON.h"
+#include "player.h"
 
 #define NUM_HAND        2
 #define NUM_COMMUNITY   5
@@ -32,7 +33,9 @@ typedef struct gamestate
     int hand[NUM_HAND];
     int handsize;
     bool your_turn;
+    Player *opponents[MAX_OPPONENTS];
     int num_opponents;
+    int num_playing;
     int community[NUM_COMMUNITY];
     int communitysize;
     bool deck[NUM_DECK];
@@ -59,5 +62,12 @@ int GetCardArray(int *cards, cJSON *json);
  * logfile: the file for logging output
  */
 void PrintCards(GameState *game, FILE *logfile);
+
+/*
+ * Print the current opponents at the table and their information
+ * game: the game state containing the players
+ * logfile: the file for logging output
+ */
+void PrintOpponents(GameState *game, FILE *logfile);
 
 #endif
