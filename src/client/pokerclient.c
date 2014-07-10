@@ -16,9 +16,10 @@
 
 /*
  * Set up everything necessary for the client
+ * handranksfile: the file containing the hand ranks look up table
  */
 static
-void PokerClientSetup(void);
+void PokerClientSetup(char *handranksfile);
 
 /*
  * Shut down all resources for the client
@@ -31,10 +32,16 @@ int main(int argc, char **argv)
     PokerAI *AI = NULL;
     cJSON *response = NULL;
     char *action = NULL;
+    char *handranksfile = DEFAULT_HANDRANKS_FILE;
     char postURL[BUF_SIZE] = {0};
 
     //Set up the poker client
-    PokerClientSetup();
+    if (argc == 2)
+    {
+        handranksfile = argv[1];
+    }
+
+    PokerClientSetup(handranksfile);
     AI = CreatePokerAI(NUM_THREADS, TIMEOUT);
 
     while (1)
@@ -92,15 +99,18 @@ int main(int argc, char **argv)
 
 /*
  * Set up everything necessary for the client
+ * handranksfile: the file containing the hand ranks look up table
  */
 static
-void PokerClientSetup(void)
+void PokerClientSetup(char *handranksfile)
 {
     printf("Initializing poker tables...\t");
-    InitEvaluator();
+    fflush(stdout);
+    InitEvaluator(handranksfile);
     printf("Tables initialized\n");
 
     printf("Starting curl session...\t");
+    fflush(stdout);
     BeginConnectionSession();
     printf("Session started\n");
 

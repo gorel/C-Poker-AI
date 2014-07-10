@@ -6,6 +6,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define DEFAULT_HANDRANKS_FILE  "HANDRANKS.DAT"
+#define COLOR_ERROR "\033[1;31m"
+#define COLOR_DEFAULT "\033[0m"
+
 //Massive lookup table
 int HR[32487834];
 
@@ -15,8 +19,9 @@ extern bool POKERLIB_INITIALIZED;
 /*
  * Initialize the 2+2 evaluator by loading the lookup table
  * into the HR array.
+ * handranksfile: the hand ranks look up table data
  */
-void InitEvaluator(void);
+void InitEvaluator(char *handranksfile);
 
 /*
  * Evaluate a hand of 5, 6, or 7 cards

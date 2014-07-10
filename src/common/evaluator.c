@@ -5,14 +5,23 @@ bool POKERLIB_INITIALIZED = false;
 /*
  * Initialize the 2+2 evaluator by loading the lookup table
  * into the HR array.
+ * handranksfile: the hand ranks look up table data
  */
-void InitEvaluator(void)
+void InitEvaluator(char *handranksfile)
 {
     //Make sure not to load the array twice
     if (POKERLIB_INITIALIZED) return;
 
     memset(HR, 0, sizeof(HR));
-    FILE *in = fopen("HANDRANKS.DAT", "rb");
+    FILE *in = fopen(handranksfile, "rb");
+
+    //Bad file name given... abort
+    if (!in)
+    {
+        fprintf(stderr, "\n%sFATAL: Could not load hand ranks file.%s\n", COLOR_ERROR, COLOR_DEFAULT);
+        exit(1);
+    }
+
     fread(HR, sizeof(HR), 1, in);
     fclose(in);
 
