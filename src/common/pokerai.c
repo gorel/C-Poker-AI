@@ -377,7 +377,9 @@ int SimulateSingleGame(PokerAI *ai)
     //See who won
     myscore = GetHandValue(me, NUM_HAND + NUM_COMMUNITY);
     bestopponent = BestOpponentHand(opponents, game->num_opponents, NUM_HAND + NUM_COMMUNITY);
-    if (myscore > bestopponent)
+
+    //Count ties as a win
+    if (myscore >= bestopponent)
     {
         return AI_WIN;
     }

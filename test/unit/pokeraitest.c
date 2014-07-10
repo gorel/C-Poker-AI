@@ -1,5 +1,6 @@
 #include "tests.h"
 
+#define NUM_CORES   4
 #define SECOND      1000
 #define MINUTE      (SECOND * 60)
 
@@ -14,7 +15,7 @@ void TestPokerAI(int timeout)
 {
     char *gamestate;
     cJSON *json = NULL;
-    PokerAI *AI = CreatePokerAI(4, timeout);
+    PokerAI *AI = CreatePokerAI(NUM_CORES, timeout);
     FILE *log = stderr;
     SetLogging(AI, LOGLEVEL_INFO, log);
 

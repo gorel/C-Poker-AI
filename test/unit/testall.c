@@ -6,7 +6,14 @@
 
 int main(int argc, char **argv)
 {
-    InitEvaluator();
+    char *handranksfile = DEFAULT_HANDRANKS_FILE;
+
+    if (argc == 2)
+    {
+        handranksfile = argv[1];
+    }
+
+    InitEvaluator(handranksfile);
     BeginConnectionSession();
 
     TestResult *result;
