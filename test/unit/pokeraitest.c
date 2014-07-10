@@ -3,11 +3,6 @@
 #define SECOND      1000
 #define MINUTE      (SECOND * 60)
 
-extern char *gamestate1;
-extern char *gamestate2;
-extern char *gamestate3;
-extern char *gamestate4;
-
 /*
  * Test the poker AI's logic by creating random games
  * and evaluating its choices.

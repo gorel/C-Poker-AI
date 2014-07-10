@@ -1,7 +1,4 @@
-#include "tests.h"
-
-#define NUM_CORES   4
-#define TIMEOUT     1000
+#include "ailogictest.h"
 
 int main(int argc, char **argv)
 {

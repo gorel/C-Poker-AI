@@ -1,7 +1,0 @@
-# Ignore everything...
-*
-
-# ... except test files
-!.gitignore
-!*test*
-!gamestategenerator.c

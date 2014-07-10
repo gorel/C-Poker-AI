@@ -1,4 +1,4 @@
-#include "tests.h"
+#include "gamestategenerator.h"
 
 #define MAXBUF      4096
 #define SMALLBUF    128

@@ -247,17 +247,20 @@ void PrintCards(GameState *game, FILE *logfile)
  */
 void PrintOpponents(GameState *game, FILE *logfile)
 {
-    fprintf(logfile, "Opponents:\n");
-    for (int i = 0; i < game->num_opponents; i++)
+    Player *player = &game->opponents[0];
+
+    fprintf(logfile, "Opponents:\t");
+    fprintf(logfile, "\t[FOLDED] %s: initial_stack=%d, stack=%d, current_bet=%d\n", player->name, player->initial_stack, player->stack, player->current_bet);
+    for (int i = 1; i < game->num_opponents; i++)
     {
-        Player *player = &game->opponents[i];
+        player = &game->opponents[i];
         if (player->folded)
         {
-            printf("\t[FOLDED] %s: initial_stack=%d, stack=%d, current_bet=%d\n", player->name, player->initial_stack, player->stack, player->current_bet);
+            fprintf(logfile, "\t\t[FOLDED] %s: initial_stack=%d, stack=%d, current_bet=%d\n", player->name, player->initial_stack, player->stack, player->current_bet);
         }
         else
         {
-            printf("\t%s: initial_stack=%d, stack=%d, current_bet=%d\n", player->name, player->initial_stack, player->stack, player->current_bet);
+            fprintf(logfile, "\t\t%s: initial_stack=%d, stack=%d, current_bet=%d\n", player->name, player->initial_stack, player->stack, player->current_bet);
         }
     }
 }

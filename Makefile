@@ -1,25 +1,82 @@
-TARGET	= pokerclient
 CC		= gcc
 LINKER	= gcc -o
-CFLAGS	= -Wall -Werror -pedantic -std=gnu99 -g -O3 -Wno-unused-result
+CFLAGS	= -Wall -Werror -pedantic -std=gnu99 -Ofast -funroll-loops -Wno-unused-result
 CLIBS	= -lcurl -lm -lpthread
+rm		= rm -f
 
 SRCDIR	= src
+TESTDIR = test
 OBJDIR	= obj
 BINDIR	= bin
 
-SOURCES		:= $(wildcard $(SRCDIR)/*.c)
-INCLUDES	:= $(wildcard $(SRCDIR)/*.h)
-OBJECTS		:= $(SOURCES:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
-rm			= rm -f
+COMMONDIR 		= $(SRCDIR)/common
+CLIENTDIR 		= $(SRCDIR)/client
+TESTCOMMONDIR 	= $(TESTDIR)/common
+TESTALLDIR  	= $(TESTDIR)/unit
+TESTAIDIR 		= $(TESTDIR)/ai
 
-$(BINDIR)/$(TARGET): $(OBJECTS)
-	@$(LINKER) $@ $(CFLAGS) $(OBJECTS) $(CLIBS)
-	@echo -e "\n"$(TARGET)" built successfully.\n"
+CLIENT_INCSRC 	= $(COMMONDIR) $(CLIENTDIR)
+TEST_INCSRC 	= $(COMMONDIR) $(TESTCOMMONDIR)
+TESTALL_INCSRC 	= $(COMMONDIR) $(TESTCOMMONDIR) $(TESTALLDIR)
+TESTAI_INCSRC 	= $(COMMONDIR) $(TESTCOMMONDIR) $(TESTAIDIR)
 
-$(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.c
-	@echo -e "\tCompiling "$<
+CLIENT_INC 		= $(foreach d, $(CLIENT_INCSRC), -I$d)
+TEST_INC 		= $(foreach d, $(TEST_INCSRC), -I$d)
+TESTALL_INC 	= $(foreach d, $(TESTALL_INCSRC), -I$d)
+TESTAI_INC 		= $(foreach d, $(TESTAI_INCSRC), -I$d)
+
+COMMON_SOURCES 		= $(wildcard $(COMMONDIR)/*.c)
+CLIENT_SOURCES 		= $(wildcard $(CLIENTDIR)/*.c)
+TESTCOMMON_SOURCES 	= $(wildcard $(TESTCOMMONDIR)/*.c)
+TESTALL_SOURCES 	= $(wildcard $(TESTALLDIR)/*.c)
+TESTAI_SOURCES 		= $(wildcard $(TESTAIDIR)/*.c)
+
+COMMON_OBJECTS 		:= $(patsubst $(COMMONDIR)/%.c, $(OBJDIR)/%.o, $(COMMON_SOURCES))
+CLIENT_OBJECTS 		:= $(patsubst $(CLIENTDIR)/%.c, $(OBJDIR)/%.o, $(CLIENT_SOURCES))
+TESTCOMMON_OBJECTS 	:= $(patsubst $(TESTCOMMONDIR)/%.c, $(OBJDIR)/%.o, $(TESTCOMMON_SOURCES))
+TESTALL_OBJECTS 	:= $(patsubst $(TESTALLDIR)/%.c, $(OBJDIR)/%.o, $(TESTALL_SOURCES))
+TESTAI_OBJECTS 		:= $(patsubst $(TESTAIDIR)/%.c, $(OBJDIR)/%.o, $(TESTAI_SOURCES))
+OBJECTS 			:= $(wildcard $(OBJDIR)/*.o)
+
+TARGETS 			:= pokerclient testall testai
+TARGETS 			:= $(foreach t, $(TARGETS), $(BINDIR)/$t)
+
+all: $(TARGETS)
+
+$(BINDIR)/pokerclient: $(COMMON_OBJECTS) $(CLIENT_OBJECTS)
+	@echo -e "\t[link] "$@
+	@$(LINKER) $@ $(CFLAGS) $(CLIENT_INC) $(COMMON_OBJECTS) $(CLIENT_OBJECTS) $(CLIBS)
+	@echo -e "\n"$@" built successfully.\n"
+
+$(BINDIR)/testall: $(COMMON_OBJECTS) $(TESTCOMMON_OBJECTS) $(TESTALL_OBJECTS)
+	@echo -e "\t[link] "$@
+	@$(LINKER) $@ $(CFLAGS) $(TESTALL_INC) $(COMMON_OBJECTS) $(TESTCOMMON_OBJECTS) $(TESTALL_OBJECTS) $(CLIBS)
+	@echo -e "\n"$@" built successfully.\n"
+
+$(BINDIR)/testai: $(COMMON_OBJECTS) $(TESTCOMMON_OBJECTS) $(TESTAI_OBJECTS)
+	@echo -e "\t[link] "$@
+	@$(LINKER) $@ $(CFLAGS) $(TESTAI_INC) $(COMMON_OBJECTS) $(TESTCOMMON_OBJECTS) $(TESTAI_OBJECTS) $(CLIBS)
+	@echo -e "\n"$@" built successfully.\n"
+
+$(COMMON_OBJECTS): $(OBJDIR)/%.o : $(COMMONDIR)/%.c
+	@echo -e "\t[compile] "$<
 	@$(CC) $(CFLAGS) -c $< -o $@ $(CLIBS)
+
+$(CLIENT_OBJECTS): $(OBJDIR)/%.o : $(CLIENTDIR)/%.c
+	@echo -e "\t[compile] "$<
+	@$(CC) $(CFLAGS) $(CLIENT_INC) -c $< -o $@ $(CLIBS)
+
+$(TESTCOMMON_OBJECTS): $(OBJDIR)/%.o : $(TESTCOMMONDIR)/%.c
+	@echo -e "\t[compile] "$<
+	@$(CC) $(CFLAGS) $(TEST_INC) -c $< -o $@ $(CLIBS)
+
+$(TESTALL_OBJECTS): $(OBJDIR)/%.o : $(TESTALLDIR)/%.c
+	@echo -e "\t[compile] "$<
+	@$(CC) $(CFLAGS) $(TESTALL_INC) -c $< -o $@ $(CLIBS)
+
+$(TESTAI_OBJECTS): $(OBJDIR)/%.o : $(TESTAIDIR)/%.c
+	@echo -e "\t[compile] "$<
+	@$(CC) $(CFLAGS) $(TESTAI_INC) -c $< -o $@ $(CLIBS)
 
 clean:
 	@echo "Removing object files"
@@ -27,4 +84,4 @@ clean:
 
 remove: clean
 	@echo "Removing object files and binaries
-	@$(rm) $(BINDIR)/$(TARGET)
+	@$(rm) $(TARGETS)
