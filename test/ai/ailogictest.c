@@ -1,5 +1,7 @@
 #include "ailogictest.h"
 
+#define LOGFILE     stderr
+
 int main(int argc, char **argv)
 {
     int numtrials = 10;
@@ -19,9 +21,13 @@ int main(int argc, char **argv)
  */
 void TestAILogic(int numtrials)
 {
+    char *handranksfile = DEFAULT_HANDRANKS_FILE;
     char *gamestate;
     cJSON *json;
+
+    InitEvaluator(handranksfile);
     PokerAI *AI = CreatePokerAI(NUM_CORES, TIMEOUT);
+    SetLogging(AI, LOGLEVEL_INFO, LOGFILE);
 
     for (int i = 0; i < numtrials; i++)
     {
