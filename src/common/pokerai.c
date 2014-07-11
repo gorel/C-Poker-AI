@@ -7,6 +7,14 @@
 #define THREAD_ID ((unsigned int)pthread_self() % 100)
 
 /*
+ * Calculate the preflop win probability based on hole cards
+ * hand: the AI's hole cards
+ * return: the win probability of the given hole cards
+ */
+static
+double PreflopWinProbability(int *hand);
+
+/*
  * Spawn Monte Carlo threads to simulate poker games
  * ai: the AI which should spawn the threads
  */
@@ -149,8 +157,15 @@ char *GetBestAction(PokerAI *ai)
     ai->games_won = 0;
     ai->games_simulated = 0;
 
-    SpawnMonteCarloThreads(ai);
-    winprob = ((double) ai->games_won) / ai->games_simulated;
+    if (ai->game.communitysize == 0)
+    {
+        winprob = PreflopWinProbability(ai->game.hand);
+    }
+    else
+    {
+       SpawnMonteCarloThreads(ai);
+       winprob = ((double) ai->games_won) / ai->games_simulated;
+    }
 
     //Set the pot odds
     if (ai->game.call_amount > 0)
@@ -160,7 +175,7 @@ char *GetBestAction(PokerAI *ai)
     else
     {
         //There is nothing to be lost by calling
-        potodds = 0.1;
+        potodds = 1.0 / ai->game.num_playing;
     }
 
     expectedgain = winprob / potodds;
@@ -224,6 +239,65 @@ void WriteAction(PokerAI *ai, FILE *file)
         fprintf(file, "!! No action set !!\n");
         break;
     }
+}
+
+/*
+ * Calculate the preflop win probability based on hole cards
+ * hand: the AI's hole cards
+ * return: the win probability of the given hole cards
+ */
+static
+double PreflopWinProbability(int *hand)
+{
+    /*
+     * Quick guide:
+     * val:     0  1  2  3  4  5  6  7  8  9  10 11 12
+     * card:    2  3  4  5  6  7  8  9  T  J  Q  K  A
+     * score([AH,AD]) = 30
+     * score([AH,KD]) = 23
+     * score([TD,8D]) = 18
+     * score([AH,TD]) = 16
+     * score([KH,TD]) = 16
+     * score([JD,7D]) = 14
+     * score([4D,5D]) = 9
+     * score([2H,2D]) = 6
+     * score([2H,7H]) = 5
+     * score([2H,7D]) = 1
+     */
+
+    int score  = 0;
+    int c1val  = (hand[0] - 1) / 4;
+    int c2val  = (hand[1] - 1) / 4;
+    int c1suit = (hand[0] - 1) % 4;
+    int c2suit = (hand[1] - 1) % 4;
+    int diff = abs(c1val - c2val);
+
+    //Be warned: many magic numbers exist in this function
+    //They have been chosen based on logic fine-tuning
+
+    score = c1val + c2val;
+
+    //Give bonuses to valued pairs and suited pairs
+    if (c1val == c2val)
+    {
+        score += 6;
+    }
+    else if (c1suit == c2suit)
+    {
+        score += 4;
+    }
+
+    //Lower the score of cards with a large value difference
+    if (diff > 4)
+    {
+        score -= 4;
+    }
+    else if (diff > 2)
+    {
+        score -= diff;
+    }
+
+    return score / 30.0;
 }
 
 /*
