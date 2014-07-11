@@ -1,9 +1,6 @@
 #include "pokerai.h"
 
-#define AI_WIN  1
-#define AI_LOSE 0
-
-//Close enough?
+//Naive way to get thread ID
 #define THREAD_ID ((unsigned int)pthread_self() % 100)
 
 /*
@@ -129,8 +126,7 @@ void UpdateGameState(PokerAI *ai, cJSON *new_state)
 
     if (ai->loglevel >= LOGLEVEL_INFO)
     {
-        PrintCards(&ai->game, ai->logfile);
-        PrintOpponents(&ai->game, ai->logfile);
+        PrintTableInfo(&ai->game, ai->logfile);
     }
 }
 
@@ -157,20 +153,10 @@ char *GetBestAction(PokerAI *ai)
     ai->games_won = 0;
     ai->games_simulated = 0;
 
-    if (ai->game.communitysize == 0)
-    {
-        winprob = PreflopWinProbability(ai->game.hand);
-    }
-    else
-    {
-       SpawnMonteCarloThreads(ai);
-       winprob = ((double) ai->games_won) / ai->games_simulated;
-    }
-
     //Set the pot odds
     if (ai->game.call_amount > 0)
     {
-        potodds = (double) ai->game.call_amount / (ai->game.call_amount + ai->game.current_bet);
+        potodds = (double) ai->game.call_amount / (ai->game.call_amount + ai->game.current_pot);
     }
     else
     {
@@ -178,25 +164,51 @@ char *GetBestAction(PokerAI *ai)
         potodds = 1.0 / ai->game.num_playing;
     }
 
+    //Use preflop statistics if there aren't any community cards yet
+    if (ai->game.communitysize == 0)
+    {
+        if (ai->loglevel >= LOGLEVEL_DEBUG)
+        {
+            fprintf(ai->logfile, "Performing simple preflop computation.\n");
+        }
+
+        winprob = PreflopWinProbability(ai->game.hand);
+    }
+    //Otherwise, start spawning Monte Carlo threads
+    else
+    {
+        if (ai->loglevel >= LOGLEVEL_DEBUG)
+        {
+            fprintf(ai->logfile, "Performing Monte Carlo simulations.\n");
+        }
+
+        SpawnMonteCarloThreads(ai);
+        winprob = ((double) ai->games_won) / ai->games_simulated;
+
+        if (ai->loglevel >= LOGLEVEL_INFO)
+        {
+            //Human-readable output
+            if (ai->games_simulated > 1000)
+            {
+                fprintf(ai->logfile, "Simulated %dk games.\n", ai->games_simulated / 1000);
+            }
+            else
+            {
+                fprintf(ai->logfile, "Simulated %d games.\n", ai->games_simulated);
+            }
+        }
+    }
+
+    //Set the rate of return
     expectedgain = winprob / potodds;
 
     if (ai->loglevel >= LOGLEVEL_INFO)
     {
-        //Human-readable output
-        if (ai->games_simulated > 1000)
-        {
-            fprintf(ai->logfile, "Simulated %dk games.\n", ai->games_simulated / 1000);
-        }
-        else
-        {
-            fprintf(ai->logfile, "Simulated %d games.\n", ai->games_simulated);
-        }
-
         fprintf(ai->logfile, "Win probability: %.2lf%%\n", winprob * 100);
         fprintf(ai->logfile, "Rate of return:  %.2lf\n", expectedgain);
     }
 
-   MakeDecision(ai, winprob, expectedgain);
+    MakeDecision(ai, winprob, expectedgain);
     return ActionGetString(&ai->action);
 }
 
@@ -391,7 +403,7 @@ int SimulateSingleGame(PokerAI *ai)
     int myscore;
     int bestopponent;
 
-    for (int i = 0; i < game->num_opponents; i++)
+    for (int i = 0; i < game->num_playing; i++)
     {
         opponents[i] = malloc(sizeof(*opponents[i]) * (NUM_HAND + NUM_COMMUNITY));
     }
@@ -452,15 +464,14 @@ int SimulateSingleGame(PokerAI *ai)
     myscore = GetHandValue(me, NUM_HAND + NUM_COMMUNITY);
     bestopponent = BestOpponentHand(opponents, game->num_opponents, NUM_HAND + NUM_COMMUNITY);
 
+    //Free allocated memory
+    for (int i = 0; i < game->num_playing; i++)
+    {
+        free(opponents[i]);
+    }
+
     //Count ties as a win
-    if (myscore >= bestopponent)
-    {
-        return AI_WIN;
-    }
-    else
-    {
-        return AI_LOSE;
-    }
+    return (myscore >= bestopponent);
 }
 
 /*
@@ -583,6 +594,12 @@ void MakeDecision(PokerAI *ai, double winprob, double expectedgain)
 
     //Don't fold if it's free to play
     if ((ai->action.type == ACTION_FOLD) && (ai->game.call_amount == 0))
+    {
+        ai->action.type = ACTION_CALL;
+    }
+
+    //Don't get locked in a raise loop
+    if ((ai->action.type == ACTION_BET) && (ai->num_times_raised > NUM_RAISE_LIMIT))
     {
         ai->action.type = ACTION_CALL;
     }

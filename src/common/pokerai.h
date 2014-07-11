@@ -11,6 +11,8 @@
 #include "gamestate.h"
 #include "timer.h"
 
+#define NUM_RAISE_LIMIT     2
+
 typedef enum loglevel
 {
     LOGLEVEL_NONE,
@@ -32,6 +34,7 @@ typedef struct pokerai
 
     //Current game state
     GameState game;
+    int num_times_raised;
 
     //Recommended action
     Action action;
