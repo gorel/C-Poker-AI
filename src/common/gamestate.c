@@ -193,6 +193,13 @@ void SetGameState(GameState *game, cJSON *json)
     //Set the AI's list of opponents
     SetGameOpponents(game, JSON(json, "players_at_table"));
 
+    //Update the current pot
+    game->current_pot = game->current_bet;
+    for (int i = 0; i < game->num_opponents; i++)
+    {
+        game->current_pot += game->opponents[i].current_bet;
+    }
+
     //Set the AI's hand and the community cards
     game->handsize = GetCardArray(game->hand, JSON(json, "hand"));
     game->communitysize = GetCardArray(game->community, JSON(json, "community_cards"));
@@ -204,6 +211,18 @@ void SetGameState(GameState *game, cJSON *json)
 }
 
 /*
+ * Print the current table information
+ * game: the game state containing the table information
+ * logfile: the file for logging output
+ */
+void PrintTableInfo(GameState *game, FILE *logfile)
+{
+    PrintCards(game, logfile);
+    fprintf(logfile, "Current pot: %5d\n", game->current_pot);
+    PrintPlayers(game, logfile);
+}
+
+/*
  * Print the AI's cards to the given file
  * game: the game state containing the cards
  * logfile: the file for logging output
@@ -211,7 +230,7 @@ void SetGameState(GameState *game, cJSON *json)
 void PrintCards(GameState *game, FILE *logfile)
 {
     fprintf(logfile, "Hand\tCommunity\n");
-    
+
     //Print the hand
     if (game->handsize > 0)
     {
@@ -233,7 +252,7 @@ void PrintCards(GameState *game, FILE *logfile)
         fprintf(logfile, "%s", CARDS[game->community[0]]);
         for (int i = 1; i < game->communitysize; i++)
         {
-            fprintf(logfile, " %s", CARDS[game->community[i]]); 
+            fprintf(logfile, " %s", CARDS[game->community[i]]);
         }
     }
     fprintf(logfile, "\n");
@@ -241,34 +260,29 @@ void PrintCards(GameState *game, FILE *logfile)
 }
 
 /*
- * Print the current opponents at the table and their information
+ * Print the current players at the table and their information
  * game: the game state containing the players
  * logfile: the file for logging output
  */
-void PrintOpponents(GameState *game, FILE *logfile)
+void PrintPlayers(GameState *game, FILE *logfile)
 {
-    Player *player = &game->opponents[0];
+    Player *player;
 
-    fprintf(logfile, "Opponents:");
-    if (player->folded)
-    {
-        fprintf(logfile, "\t[FOLDED] %s: initial_stack=%d, stack=%d, current_bet=%d\n", player->name, player->initial_stack, player->stack, player->current_bet);
-    }
-    else
-    {
-        fprintf(logfile, "\t%s: initial_stack=%d, stack=%d, current_bet=%d\n", player->name, player->initial_stack, player->stack, player->current_bet);
-    }
+    fprintf(logfile, "Me:\n");
+    fprintf(logfile, "\tinitial_stack=%5d, call_amount=%5d\n", game->initial_stack, game->call_amount);
+    fprintf(logfile, "\t        stack=%5d, current_bet=%5d\n", game->stack, game->current_bet);
 
-    for (int i = 1; i < game->num_opponents; i++)
+    fprintf(logfile, "Opponents:\n");
+    for (int i = 0; i < game->num_opponents; i++)
     {
         player = &game->opponents[i];
         if (player->folded)
         {
-            fprintf(logfile, "\t\t[FOLDED] %s: initial_stack=%d, stack=%d, current_bet=%d\n", player->name, player->initial_stack, player->stack, player->current_bet);
+            fprintf(logfile, "[FOLDED] %10s: initial_stack=%5d, stack=%5d, current_bet=%5d\n", player->name, player->initial_stack, player->stack, player->current_bet);
         }
         else
         {
-            fprintf(logfile, "\t\t%s: initial_stack=%d, stack=%d, current_bet=%d\n", player->name, player->initial_stack, player->stack, player->current_bet);
+            fprintf(logfile, "%10s: initial_stack=%5d, stack=%5d, current_bet=%5d\n", player->name, player->initial_stack, player->stack, player->current_bet);
         }
     }
 }

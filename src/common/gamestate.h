@@ -29,6 +29,7 @@ typedef struct gamestate
     int stack;
     int current_bet;
     int call_amount;
+    int current_pot;
     Phase phase;
     int hand[NUM_HAND];
     int handsize;
@@ -57,6 +58,13 @@ void SetGameState(GameState *game, cJSON *json);
 int GetCardArray(int *cards, cJSON *json);
 
 /*
+ * Print the current table information
+ * game: the game state containing the table information
+ * logfile: the file for logging output
+ */
+void PrintTableInfo(GameState *game, FILE *logfile);
+
+/*
  * Print the AI's cards to the given file
  * game: the game state containing the cards
  * logfile: the file for logging output
@@ -64,10 +72,10 @@ int GetCardArray(int *cards, cJSON *json);
 void PrintCards(GameState *game, FILE *logfile);
 
 /*
- * Print the current opponents at the table and their information
+ * Print the current players at the table and their information
  * game: the game state containing the players
  * logfile: the file for logging output
  */
-void PrintOpponents(GameState *game, FILE *logfile);
+void PrintPlayers(GameState *game, FILE *logfile);
 
 #endif
