@@ -49,59 +49,6 @@ Phase GetPhase(char *phase)
 }
 
 /*
- * Create a mask representing the given card
- * card: the string representation of the card
- * return: the representation of this card as an int
- */
-static
-int CardMaskFromString(char *card)
-{
-    int val;
-    char c = card[0];
-    if (c >= '2' && c <= '9')
-    {
-        val = 4 * (c - '2') + 1;
-    }
-    else if (c == 'T')
-    {
-        val = 33;
-    }
-    else if (c == 'J')
-    {
-        val = 37;
-    }
-    else if (c == 'Q')
-    {
-        val = 41;
-    }
-    else if (c == 'K')
-    {
-        val = 45;
-    }
-    else // c == 'A'
-    {
-        val = 49;
-    }
-
-    c = card[1];
-    if (c == 'C')
-    {
-        val += 1;
-    }
-    else if (c == 'D')
-    {
-        val += 2;
-    }
-    else if (c == 'H')
-    {
-        val += 3;
-    }
-    //if c == 'S', val += 0
-
-    return val;
-}
-
-/*
  * Remove cards from the deck that have already been seen in play
  * deck: the deck to remove cards from
  * cards: the cards to remove
@@ -157,6 +104,58 @@ void SetGameOpponents(GameState *game, cJSON *players)
 }
 
 /*
+ * Create an int representing the given card
+ * card: the string representation of the card
+ * return: the representation of this card as an int
+ */
+int StringToCard(char *card)
+{
+    int val;
+    char c = card[0];
+    if (c >= '2' && c <= '9')
+    {
+        val = 4 * (c - '2') + 1;
+    }
+    else if (c == 'T')
+    {
+        val = 33;
+    }
+    else if (c == 'J')
+    {
+        val = 37;
+    }
+    else if (c == 'Q')
+    {
+        val = 41;
+    }
+    else if (c == 'K')
+    {
+        val = 45;
+    }
+    else // c == 'A'
+    {
+        val = 49;
+    }
+
+    c = card[1];
+    if (c == 'C')
+    {
+        val += 1;
+    }
+    else if (c == 'D')
+    {
+        val += 2;
+    }
+    else if (c == 'H')
+    {
+        val += 3;
+    }
+    //if c == 'S', val += 0
+
+    return val;
+}
+
+/*
  * Set the card array to the given JSON array
  * cards: the int array of where to place the results
  * json: a JSON array of card strings
@@ -168,7 +167,7 @@ int GetCardArray(int *cards, cJSON *json)
 
     for (i = 0; i < cJSON_GetArraySize(json); i++)
     {
-        cards[i] = CardMaskFromString(
+        cards[i] = StringToCard(
                 JSON_ARRAY_ELEM(json, i)->valuestring);
     }
 
@@ -218,8 +217,8 @@ void SetGameState(GameState *game, cJSON *json)
 void PrintTableInfo(GameState *game, FILE *logfile)
 {
     PrintCards(game, logfile);
-    fprintf(logfile, "Current pot: %5d\n", game->current_pot);
     PrintPlayers(game, logfile);
+    fprintf(logfile, "Current pot: %5d\n", game->current_pot);
 }
 
 /*

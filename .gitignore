@@ -1,5 +1,6 @@
 # Ignore symbolic links
 pokerclient
+winprob
 testall
 testai
 HANDRANKS.DAT

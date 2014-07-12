@@ -12,6 +12,9 @@ void InitEvaluator(char *handranksfile)
     //Make sure not to load the array twice
     if (POKERLIB_INITIALIZED) return;
 
+    //Seed the random number generator at this point, too
+    srand(time(NULL));
+
     memset(HR, 0, sizeof(HR));
     FILE *in = fopen(handranksfile, "rb");
 

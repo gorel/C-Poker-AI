@@ -76,6 +76,22 @@ void SetLogging(PokerAI *ai, LOGLEVEL level, FILE *file);
 void UpdateGameState(PokerAI *ai, cJSON *new_state);
 
 /*
+ * Manually set the AI's hand cards
+ * ai: the pokerAI to update
+ * hand: the cards to give the AI
+ * handsize: the number of cards in the AI's hand
+ */
+void SetHand(PokerAI *ai, char **hand, int handsize);
+
+/*
+ * Manually set the AI's community cards
+ * ai: the pokerAI to update
+ * community: the cards to give the AI
+ * communitysize: the number of community cards in play
+ */
+void SetCommunity(PokerAI *ai, char **community, int communitysize);
+
+/*
  * Return whether or not it is the AI's turn to act
  * ai: the PokerAI to update
  * return: true if it is the AI's turn to act
@@ -88,6 +104,13 @@ bool MyTurn(PokerAI *ai);
  * return: a string representation of the best action to take
  */
 char *GetBestAction(PokerAI *ai);
+
+/*
+ * Use Monte Carlo simulation to determine the win probability given the AI's hand and community cards
+ * ai: the AI that is predicting the win probability
+ * return: the win probability as a double in the range [0, 1]
+ */
+double GetWinProbability(PokerAI *ai);
 
 /*
  * Print the AI's decision to the given FILE

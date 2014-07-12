@@ -1,6 +1,6 @@
 #include "ailogictest.h"
 
-#define LOGFILE     stderr
+#define LOGFILE     stdout
 
 int main(int argc, char **argv)
 {

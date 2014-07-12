@@ -83,7 +83,9 @@ PokerAI *CreatePokerAI(int num_threads, int timeout)
 
     //Set the initial state to no other players
     ai->game.num_opponents = 0;
+    ai->game.num_playing = 0;
 
+    ai->logfile = NULL;
     return ai;
 }
 
@@ -95,9 +97,13 @@ void DestroyPokerAI(PokerAI *ai)
 {
     if (!ai) return;
 
+    if (ai->logfile)
+    {
+        fclose(ai->logfile);
+    }
+
     pthread_mutex_destroy(&ai->mutex);
     free(ai->threads);
-    fclose(ai->logfile);
     free(ai);
 }
 
@@ -127,6 +133,36 @@ void UpdateGameState(PokerAI *ai, cJSON *new_state)
     if (ai->loglevel >= LOGLEVEL_INFO)
     {
         PrintTableInfo(&ai->game, ai->logfile);
+    }
+}
+
+/*
+ * Manually set the AI's hand cards
+ * ai: the pokerAI to update
+ * hand: the cards to give the AI
+ * handsize: the number of cards in the AI's hand
+ */
+void SetHand(PokerAI *ai, char **hand, int handsize)
+{
+    ai->game.handsize = handsize;
+    for (int i = 0; i < handsize; i++)
+    {
+        ai->game.hand[i] = StringToCard(hand[i]);
+    }
+}
+
+/*
+ * Manually set the AI's community cards
+ * ai: the pokerAI to update
+ * community: the cards to give the AI
+ * communitysize: the number of community cards in play
+ */
+void SetCommunity(PokerAI *ai, char **community, int communitysize)
+{
+    ai->game.communitysize = communitysize;
+    for (int i = 0; i < communitysize; i++)
+    {
+        ai->game.community[i] = StringToCard(community[i]);
     }
 }
 
@@ -164,6 +200,31 @@ char *GetBestAction(PokerAI *ai)
         potodds = 1.0 / ai->game.num_playing;
     }
 
+    //Set the rate of return
+    winprob = GetWinProbability(ai);
+    expectedgain = winprob / potodds;
+
+    if (ai->loglevel >= LOGLEVEL_INFO)
+    {
+        fprintf(ai->logfile, "Win probability: %.2lf%%\n", winprob * 100);
+        fprintf(ai->logfile, "Rate of return:  %.2lf\n", expectedgain);
+    }
+
+    MakeDecision(ai, winprob, expectedgain);
+    return ActionGetString(&ai->action);
+}
+
+/*
+ * Use Monte Carlo simulation to determine the win probability given the AI's hand and community cards
+ * ai: the AI that is predicting the win probability
+ * return: the win probability as a double in the range [0, 1]
+ */
+double GetWinProbability(PokerAI *ai)
+{
+    double winprob;
+    ai->games_won = 0;
+    ai->games_simulated = 0;
+
     //Use preflop statistics if there aren't any community cards yet
     if (ai->game.communitysize == 0)
     {
@@ -199,17 +260,7 @@ char *GetBestAction(PokerAI *ai)
         }
     }
 
-    //Set the rate of return
-    expectedgain = winprob / potodds;
-
-    if (ai->loglevel >= LOGLEVEL_INFO)
-    {
-        fprintf(ai->logfile, "Win probability: %.2lf%%\n", winprob * 100);
-        fprintf(ai->logfile, "Rate of return:  %.2lf\n", expectedgain);
-    }
-
-    MakeDecision(ai, winprob, expectedgain);
-    return ActionGetString(&ai->action);
+    return winprob;
 }
 
 /*
@@ -435,7 +486,7 @@ int SimulateSingleGame(PokerAI *ai)
     }
 
     //Give each opponent their cards
-    for (int opp = 0; opp < game->num_opponents; opp++)
+    for (int opp = 0; opp < game->num_playing; opp++)
     {
         //Personal cards
         for (int i = 0; i < NUM_HAND; i++)
@@ -462,7 +513,7 @@ int SimulateSingleGame(PokerAI *ai)
 
     //See who won
     myscore = GetHandValue(me, NUM_HAND + NUM_COMMUNITY);
-    bestopponent = BestOpponentHand(opponents, game->num_opponents, NUM_HAND + NUM_COMMUNITY);
+    bestopponent = BestOpponentHand(opponents, game->num_playing, NUM_HAND + NUM_COMMUNITY);
 
     //Free allocated memory
     for (int i = 0; i < game->num_playing; i++)
@@ -528,6 +579,7 @@ void MakeDecision(PokerAI *ai, double winprob, double expectedgain)
 {
     int randnum = rand() % 100;
     int maxbet = (int)(ai->game.stack / 1.75) - (randnum / 2);
+    maxbet -= ai->game.call_amount;
 
     //Don't bet too much on a bluff
     int bluffbet = randnum * maxbet / 100 / 2;
@@ -577,7 +629,7 @@ void MakeDecision(PokerAI *ai, double winprob, double expectedgain)
             ai->action.amount = maxbet;
         }
     }
-    else //either large rate of return, or win probability > 90%
+    else if (winprob < 0.95 || ai->game.communitysize < 4)
     {
         if (randnum < 30)
         {
@@ -590,6 +642,19 @@ void MakeDecision(PokerAI *ai, double winprob, double expectedgain)
             ai->action.bluff = false;
             ai->action.amount = maxbet;
         }
+    }
+    else //huge chance of winning, okay to bet more than "maxbet"
+    {
+        maxbet = (ai->game.stack - ai->game.call_amount) * 9 / 10;
+        ai->action.type = ACTION_BET;
+        ai->action.bluff = false;
+        ai->action.amount = maxbet;
+    }
+
+    //If our max bet is less than the call amount, just call instead
+    if ((ai->action.type == ACTION_BET) && (maxbet < 0))
+    {
+        ai->action.type = ACTION_CALL;
     }
 
     //Don't fold if it's free to play

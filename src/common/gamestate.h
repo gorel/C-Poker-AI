@@ -50,6 +50,13 @@ typedef struct gamestate
 void SetGameState(GameState *game, cJSON *json);
 
 /*
+ * Create an int representing the given card
+ * card: the string representation of the card
+ * return: the representation of this card as an int
+ */
+int StringToCard(char *card);
+
+/*
  * Set the card array to the given JSON array
  * cards: the int array of where to place the results
  * json: a JSON array of card strings
