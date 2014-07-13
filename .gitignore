@@ -6,4 +6,4 @@ testai
 HANDRANKS.DAT
 
 # Ignore logging files
-log.txt
+*.log
