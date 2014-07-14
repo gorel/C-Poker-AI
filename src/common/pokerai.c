@@ -597,7 +597,7 @@ void MakeDecision(PokerAI *ai, double winprob, double expectedgain)
             ai->action.amount = bluffbet;
         }
     }
-    else if (expectedgain < 1.0 && winprob < 0.85)
+    else if ((expectedgain < 1.0 && winprob < 0.85) || winprob < 0.1)
     {
         if (randnum < 80)
         {
@@ -615,9 +615,9 @@ void MakeDecision(PokerAI *ai, double winprob, double expectedgain)
             ai->action.amount = bluffbet;
         }
     }
-    else if (expectedgain < 1.3 && winprob < 0.9)
+    else if ((expectedgain < 1.3 && winprob < 0.9) || winprob < 0.5)
     {
-        if (randnum < 60)
+        if (randnum < 60 || winprob < 0.5)
         {
             ai->action.type = ACTION_CALL;
             ai->action.bluff = false;

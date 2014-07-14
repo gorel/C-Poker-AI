@@ -31,3 +31,42 @@ ACTION: FOLDING
 ```
 
 This is the output that will be generated if the AI's logging level is set to LOGLEVEL_INFO.  When set to LOGLEVEL_NONE, you will see no output.  When set to LOGLEVEL_DEBUG, additional information about thread spawning will be available, including an identifier for each thread indicating when they start and stop, as well as how many games each thread was able to simulate.
+
+Monte Carlo Simulation
+======================
+Using the AI Logic Test, it is easy to determine how efficient your machine is at simulating games using cat, grep, and the R programming language.
+
+First, extract the number of simulations from ailogictest.log using tools like cat, grep, cut, sed, etc.  Send this to a new file.
+Then, provided R is installed on your machine, you can use this command to get statistics about the results:
+```R -q -e "x <- read.csv('OUTPUT.TXT', header = F); summary(x); sd(x[ , 1])"```
+where OUTPUT.TXT is the name of the new file you created.
+This will give you the five number summary and standard deviation of your results.  Here is what I have received when running AI Logic Test with numtrials=100:
+```
+Min.   :220.0
+1st Qu.:291.0
+Median :326.0
+Mean   :388.8
+3rd Qu.:416.5
+Max.   :843.0
+[1] 153.1374
+```
+
+AI Logic Test
+=============
+The AI Logic Test is useful for refining the logic used by the AI when making the fold/call/raise decision.  The test will create a random game state and ask the AI for its decision.  It will then simulate the rest of the game to see if the AI made the right choice or not.  With this information, it is easy to refine the bounds for when the AI should fold, call, or raise.
+
+At the end of the test, a table like the following will be output:
+```
+Results:
+Folding:     24982 (33 wins,  3 losses)
+Calling:    114857 (13 wins, 33 losses)
+Raising:    144814 (13 wins,  5 losses)
+
+Average logic score:  2846
+```
+
+Note that it is expected to have many "Call" losses if the AI could potentially win a lot of money and it doesn't cost much to play.
+Example:
+```
+AI must call 100 for a potential pot of 20k
+```
