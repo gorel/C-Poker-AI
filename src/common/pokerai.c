@@ -58,11 +58,9 @@ int BestOpponentHand(int **opponents, int numopponents, int numcards);
 /*
  * Set the AI's action given its expected gain
  * ai: the AI to set the action for
- * winprob: the AI's probability of winning the hand
- * expectedgain: the expected gain of the hand
  */
 static
-void MakeDecision(PokerAI *ai, double winprob, double expectedgain);
+void MakeDecision(PokerAI *ai);
 
 /*
  * Create a new PokerAI
@@ -210,7 +208,10 @@ char *GetBestAction(PokerAI *ai)
         fprintf(ai->logfile, "Rate of return:  %.2lf\n", expectedgain);
     }
 
-    MakeDecision(ai, winprob, expectedgain);
+    ai->action.winprob = winprob;
+    ai->action.expectedgain = expectedgain;
+
+    MakeDecision(ai);
     return ActionGetString(&ai->action);
 }
 
@@ -575,8 +576,11 @@ int BestOpponentHand(int **opponents, int numopponents, int numcards)
  * expectedgain: the expected gain of the hand
  */
 static
-void MakeDecision(PokerAI *ai, double winprob, double expectedgain)
+void MakeDecision(PokerAI *ai)
 {
+    double winprob = ai->action.winprob;
+    double expectedgain = ai->action.expectedgain;
+
     int randnum = rand() % 100;
     int maxbet = (int)(ai->game.stack / 1.75) - (randnum / 2);
     maxbet -= ai->game.call_amount;

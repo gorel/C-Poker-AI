@@ -1,6 +1,8 @@
 CC		= gcc
 LINKER	= gcc -o
-CFLAGS	= -Wall -Werror -pedantic -std=gnu99 -Wno-unused-result -O3 -unroll-aggressive -m64
+CFLAGS	= -Wall -Werror -pedantic -std=gnu99 -Wno-unused-result -O3
+# Uncomment for debugging
+#CFLAGS = -Wall -Werror -pedantic -std=gnu99 -g
 CLIBS	= -lcurl -lm -lpthread
 rm		= rm -f
 

@@ -14,11 +14,15 @@ typedef enum action_type
 } ActionType;
 
 //struct representing an action to take
+//and information about why the action was chosen
 typedef struct action
 {
     ActionType type;
     bool bluff;
     int amount;
+
+    double winprob;
+    double expectedgain;
 
     char string[256];
 } Action;

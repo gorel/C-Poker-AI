@@ -9,6 +9,7 @@ typedef struct stats
 {
     int win;
     int loss;
+    int unlucky;
 } Stats;
 
 struct decision_results
@@ -21,15 +22,22 @@ struct decision_results
     Stats bet_stats;
 } Results;
 
+typedef enum decision_outcome
+{
+    DECISION_BAD,
+    DECISION_GOOD,
+    DECISION_UNLUCKY
+} DecisionOutcome;
+
 /*
  * Simulate one more game for the poker AI
  * and update the global struct of its decisions
  * in order to fine tune the logic
  * ai: the poker AI to simulate a game for
- * return: whether or not the AI made a good decision
+ * return: the outcome of the AI's decision
  */
 static
-bool SimulateLastGame(PokerAI *ai);
+DecisionOutcome SimulateLastGame(PokerAI *ai);
 
 int main(int argc, char **argv)
 {
@@ -56,7 +64,7 @@ void TestAILogic(int numtrials)
     char *gamestate;
     cJSON *json;
     int total_score;
-    bool good_decision;
+    DecisionOutcome outcome;
 
     Results.fold = 0;
     Results.call = 0;
@@ -70,12 +78,18 @@ void TestAILogic(int numtrials)
     Results.call_stats.loss = 0;
     Results.bet_stats.loss  = 0;
 
+    Results.fold_stats.unlucky = 0;
+    Results.call_stats.unlucky = 0;
+    Results.bet_stats.unlucky  = 0;
+
     InitEvaluator(handranksfile);
     PokerAI *AI = CreatePokerAI(NUM_CORES, TIMEOUT);
     SetLogging(AI, LOGLEVEL_INFO, LOGFILE);
 
     for (int i = 0; i < numtrials; i++)
     {
+        printf("Running test %3d/%3d\n", i, numtrials);
+
         gamestate = GenerateRandomGameState();
         json = cJSON_Parse(gamestate);
         UpdateGameState(AI, json);
@@ -95,14 +109,26 @@ void TestAILogic(int numtrials)
         free(gamestate);
 
         //Simulate one more game in order to judge the AI's logic
-        good_decision = SimulateLastGame(AI);
-        fprintf(LOGFILE, "***%s DECISION***\n\n", good_decision? "GOOD" : "BAD");
+        outcome = SimulateLastGame(AI);
+        switch(outcome)
+        {
+        case DECISION_BAD:
+            fprintf(LOGFILE, "***BAD DECISION***\n\n");
+            break;
+
+        case DECISION_GOOD:
+            fprintf(LOGFILE, "***GOOD DECISION***\n\n");
+            break;
+        case DECISION_UNLUCKY:
+            fprintf(LOGFILE, "***UNLUCKY DECISION***\n\n");
+            break;
+        }
     }
 
     printf("\n\nResults:\n");
-    printf("Folding: %10d (%2d wins, %2d losses)\n", Results.fold, Results.fold_stats.win, Results.fold_stats.loss);
-    printf("Calling: %10d (%2d wins, %2d losses)\n", Results.call, Results.call_stats.win, Results.call_stats.loss);
-    printf("Raising: %10d (%2d wins, %2d losses)\n", Results.bet, Results.bet_stats.win, Results.bet_stats.loss);
+    printf("Folding: %10d (%2d good, %2d bad, %2d unlucky)\n", Results.fold, Results.fold_stats.win, Results.fold_stats.loss, Results.fold_stats.unlucky);
+    printf("Calling: %10d (%2d good, %2d bad, %2d unlucky)\n", Results.call, Results.call_stats.win, Results.call_stats.loss, Results.call_stats.unlucky);
+    printf("Raising: %10d (%2d good, %2d bad, %2d unlucky)\n", Results.bet, Results.bet_stats.win, Results.bet_stats.loss, Results.bet_stats.unlucky);
     total_score = Results.fold + Results.call + Results.bet;
 
     printf("\nAverage logic score: %6d\n", total_score / numtrials);
@@ -156,10 +182,10 @@ int BestOpponentHand(int **opponents, int numopponents, int numcards)
  * and update the global struct of its decisions
  * in order to fine tune the logic
  * ai: the poker AI to simulate a game for
- * return: whether or not the AI made a good decision
+ * return: the outcome of the AI's decision
  */
 static
-bool SimulateLastGame(PokerAI *ai)
+DecisionOutcome SimulateLastGame(PokerAI *ai)
 {
     GameState *game = &ai->game;
     int me[NUM_HAND + NUM_COMMUNITY];
@@ -242,7 +268,16 @@ bool SimulateLastGame(PokerAI *ai)
         if (myscore > bestopponent)
         {
             Results.fold -= game->current_pot;
-            Results.fold_stats.loss++;
+
+            if (ai->action.winprob > 0.45)
+            {
+                Results.fold_stats.loss++;
+            }
+            else
+            {
+                Results.fold_stats.unlucky++;
+            }
+
             return false;
         }
         //Folding saved us from losing more money
@@ -266,7 +301,16 @@ bool SimulateLastGame(PokerAI *ai)
         else
         {
             Results.call -= game->call_amount;
-            Results.call_stats.loss++;
+
+            if (ai->action.winprob < 0.35 && ai->action.expectedgain < 20)
+            {
+                Results.call_stats.loss++;
+            }
+            else
+            {
+                Results.call_stats.unlucky++;
+            }
+
             return false;
         }
         break;
@@ -287,7 +331,15 @@ bool SimulateLastGame(PokerAI *ai)
         else
         {
             Results.bet -= game->call_amount + ai->action.amount;
-            Results.bet_stats.loss++;
+
+            if (ai->action.winprob < 0.5)
+            {
+                Results.bet_stats.loss++;
+            }
+            else
+            {
+                Results.bet_stats.unlucky++;
+            }
             return false;
         }
         break;
