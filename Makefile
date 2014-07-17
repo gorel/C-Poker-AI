@@ -1,10 +1,10 @@
 CC		= gcc
 LINKER	= gcc -o
-CFLAGS	= -Wall -Werror -pedantic -std=gnu99 -Wno-unused-result -O3
-# Uncomment for debugging
-#CFLAGS = -Wall -Werror -pedantic -std=gnu99 -g
 CLIBS	= -lcurl -lm -lpthread
 rm		= rm -f
+
+all: 	CFLAGS = -Wall -Werror -pedantic -std=gnu99 -Wno-unused-result -O3
+debug: 	CFLAGS = -Wall -Werror -pedantic -std=gnu99 -g
 
 SRCDIR	= src
 TESTDIR = test
@@ -49,6 +49,8 @@ TARGETS 			:= pokerclient winprob testall testai
 TARGETS 			:= $(foreach t, $(TARGETS), $(BINDIR)/$t)
 
 all: $(TARGETS)
+
+debug: $(TARGETS)
 
 $(BINDIR)/pokerclient: $(COMMON_OBJECTS) $(CLIENT_OBJECTS)
 	@echo -e "\t[link] "$@
