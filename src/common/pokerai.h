@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include <unistd.h>
 
 #include "action.h"
 #include "evaluator.h"
@@ -47,11 +48,10 @@ typedef struct pokerai
 /*
  * Create a new PokerAI
  *
- * num_threads: number of threads this AI should use
  * timeout: how long (in milliseconds) each thread may simulate games
  * return a new PokerAI
  */
-PokerAI *CreatePokerAI(int num_threads, int timeout);
+PokerAI *CreatePokerAI(int timeout);
 
 /*
  * Destroy the PokerAI and all associated memory

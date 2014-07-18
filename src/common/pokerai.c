@@ -65,13 +65,13 @@ void MakeDecision(PokerAI *ai);
 /*
  * Create a new PokerAI
  *
- * num_threads: number of threads this AI should use
  * timeout: how long (in milliseconds) each thread may simulate games
  * return a new PokerAI
  */
-PokerAI *CreatePokerAI(int num_threads, int timeout)
+PokerAI *CreatePokerAI(int timeout)
 {
     PokerAI *ai = malloc(sizeof(PokerAI));
+    int num_threads = sysconf(_SC_NPROCESSORS_ONLN);
 
     //Allocate worker thread members
     ai->num_threads = num_threads;
@@ -116,6 +116,9 @@ void SetLogging(PokerAI *ai, LOGLEVEL level, FILE *file)
 {
     ai->loglevel = level;
     ai->logfile = file;
+    fprintf(file, "Logging started\n");
+    fprintf(file, "num_threads: %d\n", ai->num_threads);
+    fprintf(file, "timeout: %dms\n\n", ai->timeout);
 }
 
 /*

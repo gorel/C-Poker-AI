@@ -83,12 +83,12 @@ void TestAILogic(int numtrials)
     Results.bet_stats.unlucky  = 0;
 
     InitEvaluator(handranksfile);
-    PokerAI *AI = CreatePokerAI(NUM_CORES, TIMEOUT);
+    PokerAI *AI = CreatePokerAI(TIMEOUT);
     SetLogging(AI, LOGLEVEL_INFO, LOGFILE);
 
     for (int i = 0; i < numtrials; i++)
     {
-        printf("Running test %3d/%3d\n", i, numtrials);
+        printf("Running test %3d/%3d\n", i+1, numtrials);
 
         gamestate = GenerateRandomGameState();
         json = cJSON_Parse(gamestate);
@@ -100,6 +100,7 @@ void TestAILogic(int numtrials)
         //believe the bluff and fold
         if (AI->action.bluff)
         {
+            printf("\tBluffed action, simulating new game\n");
             i--;
             continue;
         }
@@ -269,7 +270,7 @@ DecisionOutcome SimulateLastGame(PokerAI *ai)
         {
             Results.fold -= game->current_pot;
 
-            if (ai->action.winprob > 0.45)
+            if (ai->action.winprob > 0.5)
             {
                 Results.fold_stats.loss++;
             }

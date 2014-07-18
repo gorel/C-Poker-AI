@@ -5,7 +5,6 @@
 #include "pokerai.h"
 #include "urlconnection.h"
 
-#define NUM_THREADS 4
 #define TIMEOUT     1000
 #define GET_URL     "http://example.com/"
 #define POST_URL    "http://example.com/post/"
@@ -42,7 +41,7 @@ int main(int argc, char **argv)
     }
 
     PokerClientSetup(handranksfile);
-    AI = CreatePokerAI(NUM_THREADS, TIMEOUT);
+    AI = CreatePokerAI(TIMEOUT);
 
     while (1)
     {
