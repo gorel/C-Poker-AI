@@ -14,6 +14,7 @@ int main(int argc, char **argv)
     char *last_arg;
     int num_community = argc - 3;
     int num_playing = DEFAULT_NUM_PLAYING;
+    int simulated;
     double winprob;
     PokerAI *AI;
 
@@ -55,7 +56,10 @@ int main(int argc, char **argv)
     UpdateGameDeck(&AI->game);
     AI->game.num_playing = num_playing;
     winprob = GetWinProbability(AI);
+    simulated = AI->games_simulated;
+
     printf("Win probability: %.2lf%%\n", winprob * 100);
+    printf("Games simulated: %dk\n", simulated / 1000);
 
     //Clean up resources
     DestroyPokerAI(AI);
