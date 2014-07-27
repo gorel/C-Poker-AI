@@ -203,6 +203,16 @@ void SetGameState(GameState *game, cJSON *json)
     game->handsize = GetCardArray(game->hand, JSON(json, "hand"));
     game->communitysize = GetCardArray(game->community, JSON(json, "community_cards"));
 
+    UpdateGameDeck(game);
+}
+
+/*
+ * Update the game's deck based on
+ * the game's hand and community cards
+ * game: the game to update
+ */
+void UpdateGameDeck(GameState *game)
+{
     //Remove these cards from the deck
     memset(game->deck, 1, sizeof(game->deck) / sizeof(game->deck[0]));
     RemoveCardsFromDeck(game->deck, game->hand, game->handsize);

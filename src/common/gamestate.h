@@ -50,6 +50,13 @@ typedef struct gamestate
 void SetGameState(GameState *game, cJSON *json);
 
 /*
+ * Update the game's deck based on
+ * the game's hand and community cards
+ * game: the game to update
+ */
+void UpdateGameDeck(GameState *game);
+
+/*
  * Create an int representing the given card
  * card: the string representation of the card
  * return: the representation of this card as an int
