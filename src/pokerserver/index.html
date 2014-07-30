@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Win Probability Calculator
+        </title>
+        <link rel="icon" type="image/ico" href="/favicon.ico">
+</head>
+
+<body>
+    <h1>
+        Texas Hold 'Em Win Probability AI
+    </h1>
+
+    <form method="post" action="cgi/poker.py">
+        <table>
+            <tr>
+                <td>Hand</td>
+                <td><input type="text" name="hand" required></td>
+                <td>(required)</td>
+            </tr>
+            <tr>
+                <td>Community</td>
+                <td><input type="text" name="community"></td>
+                <td>(default: no cards)</td>
+            </tr>
+            <tr>
+                <td>Opponents</td>
+                <td><input type="text" name="players"></td>
+                <td>(default: 3)</td>
+            </tr>
+        </table>
+        <input type="submit" value="Calculate win probability">
+    </form>
+
+    <h2>
+        Usage:
+    </h2>
+
+    <p>
+        Hand: Input two cards that are in your private hand<br>
+        A card is represented by the regex [2-9TJQKA][SDCH]
+    </p>
+
+    <h4>
+        What's a regex?
+    </h4>
+
+    <p>
+        A card is represented by a value and a suit.<br>
+        Values: 2 through 9, T (10), J (jack), Q (queen), K (king), or A (ace)<br>
+        Suits: S (spades), D (diamonds), C (clubs), or H (hearts)<br>
+        <br>
+        Therefore, a hand may look like "JD TH" for "Jack of Diamonds and Ten of Hearts"<br>
+        Note: Don't input the quotes in the text box
+    </p>
+
+    <p>
+        Community cards are the cards turned up for the Flop, Turn, or River.<br>
+        These should be input the same way as hand cards<br>
+        Example: "7D 9C QC" for "Seven of Diamonds, Nine of Clubs, and Queen of Clubs"<br>
+        Note: Don't input the quotes in the text box
+    </p>
+
+    <p>
+        For the Opponents text box, input a number specifying how many opponents you will be facing.
+    </p>
+</body>

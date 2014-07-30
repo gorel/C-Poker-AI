@@ -58,9 +58,9 @@ The AI Logic Test is useful for refining the logic used by the AI when making th
 At the end of the test, a table like the following will be output:
 ```
 Results:
-Folding:     24982 (33 wins,  3 losses)
-Calling:    114857 (13 wins, 33 losses)
-Raising:    144814 (13 wins,  5 losses)
+Folding:     24982 (33 wins,  3 losses,  0 unlucky)
+Calling:    114857 (13 wins, 22 losses, 11 unlucky)
+Raising:    144814 (13 wins,  4 losses,  1 unlucky)
 
 Average logic score:  2846
 ```
@@ -70,3 +70,11 @@ Example:
 ```
 AI must call 100 for a potential pot of 20k
 ```
+
+Poker Server
+============
+I've been playing around with Python a little bit, and I realized it is ridiculously easy to write a server that supports CGI with it (import CGIHTTPServer, obviously).  In src/pokerserver, you'll find server.py, which starts a server on the local machine.  It takes an optional parameter representing the port the server should run on (or it will default to 9313).  The server will then take HTTP requests at that hostname and port and allow users to calculate their win probabilities in various situations.
+
+Yes, I know I'm awful at web development.  I know there are ways to do some of the things easier, but I was looking for an easy way to get something running without having to install any other dependencies -- all you need is Python!
+
+Note: Be sure to set the location of the winprob binary in pokerserver/cgi/poker.py.  I made mine an absolute link in case I decide to move where the server code is.
