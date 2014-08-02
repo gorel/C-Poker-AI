@@ -1,0 +1,30 @@
+/* style.css
+ * stylesheet for Win Probability Calculator pages
+ */
+
+h1 {
+    font-family: "Helvetica";
+    font-weight: bold;
+    text-shadow: 0px 1px 2px #000000;
+    color: red;
+}
+
+a, p {
+    font-family: "Helvetica";
+}
+
+th, td {
+    font-family: "Helvetica";
+    font-weight: bold;
+    text-align: left;
+}
+
+.svg_table {
+    font-size: 20pt;
+    border-collapse: separate;
+    border-spacing: 25px;
+}
+
+.svg_img {
+    height: 125px;
+}

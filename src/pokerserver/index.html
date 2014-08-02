@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>
-            Win Probability Calculator
-        </title>
-        <link rel="icon" type="image/ico" href="/favicon.ico">
+<head>
+    <title>
+        Win Probability Calculator
+    </title>
+    <link rel="icon" type="image/ico" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
 </head>
 
 <body>
@@ -15,17 +16,17 @@
     <form method="post" action="cgi/poker.py">
         <table>
             <tr>
-                <td>Hand</td>
+                <td><b>Hand</b></td>
                 <td><input type="text" name="hand" required></td>
                 <td>(required)</td>
             </tr>
             <tr>
-                <td>Community</td>
+                <td><b>Community</b></td>
                 <td><input type="text" name="community"></td>
                 <td>(default: no cards)</td>
             </tr>
             <tr>
-                <td>Opponents</td>
+                <td><b>Opponents</b></td>
                 <td><input type="text" name="players"></td>
                 <td>(default: 3)</td>
             </tr>
@@ -33,10 +34,38 @@
         <input type="submit" value="Calculate win probability">
     </form>
 
+    <br>
     <a href="https://github.com/gorel/C-Poker-AI">View the source code</a>
 
     <h2>
-        Usage:
+        Example input:
+    </h2>
+
+    <table border="1">
+        <tr>
+            <td></td>
+            <td>Input</td>
+            <td>Explanation</td>
+        </tr>
+        <tr>
+            <td>Hand</td>
+            <td>AS JH</td>
+            <td>Ace of Spades and Jack of Hearts</td>
+        </tr>
+        <tr>
+            <td>Community</td>
+            <td>QC 4H TD</td>
+            <td>Queen of Clubs, 4 of Hearts, and 10 of Diamonds</td>
+        </tr>
+        <tr>
+            <td>Opponents</td>
+            <td>2</td>
+            <td>Two opponents (this does not include yourself)</td>
+        </tr>
+    </table>
+
+    <h2>
+        Full Usage Guide:
     </h2>
 
     <p>
@@ -44,11 +73,8 @@
         A card is represented by the regex [2-9TJQKA][SDCH]
     </p>
 
-    <h4>
-        What's a regex?
-    </h4>
-
     <p>
+        Or, if you don't know regexes...<br>
         A card is represented by a value and a suit.<br>
         Values: 2 through 9, T (10), J (jack), Q (queen), K (king), or A (ace)<br>
         Suits: S (spades), D (diamonds), C (clubs), or H (hearts)<br>

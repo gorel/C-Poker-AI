@@ -5,6 +5,7 @@
             Win Probability Results
         </title>
         <link rel="icon" type="image/ico" href="/favicon.ico">
+        <link rel="stylesheet" type="text/css" href="/css/style.css">
     </head>
 
     <body>
@@ -12,15 +13,21 @@
             Win Probability Results
         </h1>
 
-         <p>
-            Your Hand: %(hand)s<br>
-            Community: %(community)s<br>
-            Opponents: %(players)s
-        </p>
+        <table class="svg_table">
+            <tr>
+                <th> Your hand          </th>
+                <th> Community cards    </th>
+            </tr>
+            <tr>
+                <td> %(hand_svg)s       </td>
+                <td> %(community_svg)s  </td>
+            </tr>
+        </table>
 
         <p>
-            %(winprob)s<br>
-            %(simulated)s
+            Opponents: %(players)s<br>
+            %(winprob_str)s<br>
+            %(simulated_str)s
         </p>
 
         <a href="/index.html"> Want to try again?</a>

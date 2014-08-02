@@ -4,17 +4,24 @@ import cgi, cgitb, os
 import subprocess
 
 WINPROB_BIN_LOC = "%s/scratch/C-Poker-AI/winprob" % (os.getenv("HOME"))
+SVG_STRING = "<img class='svg_img' src='/images/svg/%(id)s.svg' alt=%(id)s>"
 
 def print_html_content_type():
     print "Content-type: text/html\r\n\r\n"
 
-def error_redirect(location, error):
+def error_redirect(location, error=None):
     print """
     <script type="text/javascript">
-        alert(%(error)s);
         window.location.href = "%(location)s";
     </script>
-    """ % {'error': error, 'location': location}
+    """ % {'location': location}
+
+def get_svg(cards):
+    results = []
+    for card in cards:
+        svg = SVG_STRING % {"id": card}
+        results.append(svg)
+    return ''.join(results)
 
 def print_results(result_parameters):
     print_html_content_type()
@@ -29,7 +36,7 @@ def handle_request():
 
     # Make sure all fields are given
     if "hand" not in form:
-        page_redirect("/index.html")
+        error_redirect("/index.html")
 
     # Get the field values
     hand = form.getvalue('hand').split(' ')
@@ -59,11 +66,11 @@ def handle_request():
 
     # Print out the results
     parameters = {
-            "hand": hand,
-            "community": community,
-            "winprob": winprob,
+            "hand_svg": get_svg(hand),
+            "community_svg": get_svg(community),
             "players": players,
-            "simulated": simulated
+            "winprob_str": winprob,
+            "simulated_str": simulated
             }
     print_results(parameters)
 
