@@ -51,49 +51,50 @@ TARGETS 			:= $(foreach t, $(TARGETS), $(BINDIR)/$t)
 all: $(TARGETS)
 
 debug: $(TARGETS)
+	ctags -R *
 
 $(BINDIR)/pokerclient: $(COMMON_OBJECTS) $(CLIENT_OBJECTS)
-	@echo -e "\t[link] "$@
+	@echo "\t[link] "$@
 	@$(LINKER) $@ $(CFLAGS) $(CLIENT_INC) $(COMMON_OBJECTS) $(CLIENT_OBJECTS) $(CLIBS)
-	@echo -e "\n"$@" built successfully.\n"
+	@echo "\n"$@" built successfully.\n"
 
 $(BINDIR)/winprob: $(COMMON_OBJECTS) $(WINPROB_OBJECTS)
-	@echo -e "\t[link] "$@
+	@echo "\t[link] "$@
 	@$(LINKER) $@ $(CFLAGS) $(WINPROB_INC) $(COMMON_OBJECTS) $(WINPROB_OBJECTS) $(CLIBS)
-	@echo -e "\n"$@" built successfully.\n"
+	@echo "\n"$@" built successfully.\n"
 
 $(BINDIR)/testall: $(COMMON_OBJECTS) $(TESTCOMMON_OBJECTS) $(TESTALL_OBJECTS)
-	@echo -e "\t[link] "$@
+	@echo "\t[link] "$@
 	@$(LINKER) $@ $(CFLAGS) $(TESTALL_INC) $(COMMON_OBJECTS) $(TESTCOMMON_OBJECTS) $(TESTALL_OBJECTS) $(CLIBS)
-	@echo -e "\n"$@" built successfully.\n"
+	@echo "\n"$@" built successfully.\n"
 
 $(BINDIR)/testai: $(COMMON_OBJECTS) $(TESTCOMMON_OBJECTS) $(TESTAI_OBJECTS)
-	@echo -e "\t[link] "$@
+	@echo "\t[link] "$@
 	@$(LINKER) $@ $(CFLAGS) $(TESTAI_INC) $(COMMON_OBJECTS) $(TESTCOMMON_OBJECTS) $(TESTAI_OBJECTS) $(CLIBS)
-	@echo -e "\n"$@" built successfully.\n"
+	@echo "\n"$@" built successfully.\n"
 
 $(COMMON_OBJECTS): $(OBJDIR)/%.o : $(COMMONDIR)/%.c
-	@echo -e "\t[compile] "$<
+	@echo "\t[compile] "$<
 	@$(CC) $(CFLAGS) -c $< -o $@ $(CLIBS)
 
 $(CLIENT_OBJECTS): $(OBJDIR)/%.o : $(CLIENTDIR)/%.c
-	@echo -e "\t[compile] "$<
+	@echo "\t[compile] "$<
 	@$(CC) $(CFLAGS) $(CLIENT_INC) -c $< -o $@ $(CLIBS)
 
 $(WINPROB_OBJECTS): $(OBJDIR)/%.o : $(WINPROBDIR)/%.c
-	@echo -e "\t[compile] "$<
+	@echo "\t[compile] "$<
 	@$(CC) $(CFLAGS) $(WINPROB_INC) -c $< -o $@ $(CLIBS)
 
 $(TESTCOMMON_OBJECTS): $(OBJDIR)/%.o : $(TESTCOMMONDIR)/%.c
-	@echo -e "\t[compile] "$<
+	@echo "\t[compile] "$<
 	@$(CC) $(CFLAGS) $(TEST_INC) -c $< -o $@ $(CLIBS)
 
 $(TESTALL_OBJECTS): $(OBJDIR)/%.o : $(TESTALLDIR)/%.c
-	@echo -e "\t[compile] "$<
+	@echo "\t[compile] "$<
 	@$(CC) $(CFLAGS) $(TESTALL_INC) -c $< -o $@ $(CLIBS)
 
 $(TESTAI_OBJECTS): $(OBJDIR)/%.o : $(TESTAIDIR)/%.c
-	@echo -e "\t[compile] "$<
+	@echo "\t[compile] "$<
 	@$(CC) $(CFLAGS) $(TESTAI_INC) -c $< -o $@ $(CLIBS)
 
 clean:
