@@ -1,6 +1,8 @@
 C-Poker-AI
 ==========
 
+Update 2/4/2015: I finally got a chance to work on this again.  I've drastically increased the number of games I'm able to simulate when I found out that rand() isn't thread-safe.  I'm kind of surprised it has never been mentioned in any of my CS classes, and it makes me wonder how many other people are unaware of this.  Anyways, I've seen at least a 10-fold increase in how many games can be simulated.  Next time I get the chance to play around with this, I hope to improve the AI some more by adding in some machine learning.  Currently, the AI uses some hard-coded values for its logic.  I would like to find some good heuristics to use and change the AI to work like an SVM (or at least a Perceptron).
+
 First I made a poker AI in Ruby... not fast enough!
 Then I made another in Python... still too slow!
 So this is my third poker AI written entirely in C using the 2+2 hand evaluator algorithm.
@@ -11,7 +13,7 @@ I'm using libcurl to handle HTTP GET and HTTP POST in order to interact with any
 
 The AI uses Monte Carlo simulations to simulate as many games as it can before the timeout threshold is reached.  It spawns pthreads to do this work concurrently, which allows quite a few more games to be simulated in the time limit.
 
-After doing some testing, the AI is able to simulate between 150k and 600k games per second.  I have greatly improved the logging of the AI's choices to make it easy for someone to fine-tune their AI logic and see how it performs.  Here is an example of the output:
+After doing some testing, the AI is able to simulate between 0.75M and 10M games per second on a mid-level laptop.  I have greatly improved the logging of the AI's choices to make it easy for someone to fine-tune their AI logic and see how it performs.  Here is an example of the output:
 ```
 Hand    Community
 3S TH   4D JH AS 8S
@@ -24,7 +26,7 @@ Opponents:
    Charlie: initial_stack= 4298, stack= 3691, current_bet= 1138
     Thomas: initial_stack= 4013, stack= 3578, current_bet=  435
     Oliver: initial_stack= 9380, stack=  335, current_bet= 9045
-Simulated 321k games.
+Simulated 4.184M games.
 Win probability: 1.33%
 Rate of return:  0.21
 ACTION: FOLDING
@@ -40,15 +42,15 @@ First, extract the number of simulations from ailogictest.log using tools like c
 Then, provided R is installed on your machine, you can use this command to get statistics about the results:
 ```R -q -e "x <- read.csv('OUTPUT.TXT', header = F); summary(x); sd(x[ , 1])"```
 where OUTPUT.TXT is the name of the new file you created.
-This will give you the five number summary and standard deviation of your results.  Here is what I have received when running AI Logic Test with numtrials=100:
+This will give you the five number summary and standard deviation of your results.  Here is what I have received when running AI Logic Test with numtrials=100 (Note: numbers represent millions of games simulated):
 ```
-Min.   :220.0
-1st Qu.:291.0
-Median :326.0
-Mean   :388.8
-3rd Qu.:416.5
-Max.   :843.0
-[1] 153.1374
+Min.   :0.703
+1st Qu.:3.993
+Median :4.928
+Mean   :4.864
+3rd Qu.:6.363
+Max.   :8.575
+[1] 2.220754
 ```
 
 AI Logic Test

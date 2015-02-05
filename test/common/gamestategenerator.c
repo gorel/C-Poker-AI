@@ -211,7 +211,7 @@ char *GenerateGameState(
                 "2D", "3D", "4D", "5D", "6D", "7D", "8D", "9D", "TD", "JD", "QD", "KD", "AD", \
                 "2S", "3S", "4S", "5S", "6S", "7S", "8S", "9S", "TS", "JS", "QS", "KS", "AS"  };
 
-    char *names[] = {"Alice", "Bob", "Charlie", "Dave", "Eve", "Freddy", "Gary", "Harry", "Isabel", "Janice", "Kate", "Logan", "Mike", "Oliver", "Pam", "Quinn", "Ryan", "Steve", "Thomas", "Ulysses", "Veronica", "Will", "X-Ray", "Yvette", "Zach"};
+    char *names[] = {"Alice", "Brannigan", "Chloe", "Dave", "Evan", "Freddy", "Gary", "Harry", "Isabel", "Janice", "Kate", "Logan", "Mike", "Oliver", "Pam", "Quinn", "Ryan", "Steve", "Tyler", "Ulysses", "Veronica", "Will", "X-Ray", "Yvette", "Zach"};
 
     char state[MAXBUF];
     char handstr[MAXBUF];

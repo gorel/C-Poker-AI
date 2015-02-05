@@ -60,11 +60,15 @@ int main(int argc, char **argv)
  */
 void TestAILogic(int numtrials)
 {
+    cJSON *json;
+    DecisionOutcome outcome;
     char *handranksfile = DEFAULT_HANDRANKS_FILE;
     char *gamestate;
-    cJSON *json;
+    char *action;
     int total_score;
-    DecisionOutcome outcome;
+    int win_total = 0;
+    int loss_total = 0;
+    int unlucky_total = 0;
 
     Results.fold = 0;
     Results.call = 0;
@@ -88,19 +92,19 @@ void TestAILogic(int numtrials)
 
     for (int i = 0; i < numtrials; i++)
     {
-        printf("Running test %3d/%3d\n", i+1, numtrials);
+        printf("Running test %3d/%3d\t", i+1, numtrials);
 
         gamestate = GenerateRandomGameState();
         json = cJSON_Parse(gamestate);
         UpdateGameState(AI, json);
-        GetBestAction(AI);
+        action = GetBestAction(AI);
 
         //We can't judge bluffs effectively
         //since it's hard to test if an opponent would
         //believe the bluff and fold
         if (AI->action.bluff)
         {
-            printf("\tBluffed action, simulating new game\n");
+            printf("\n\tBluffed action, simulating new game\n");
             i--;
             continue;
         }
@@ -111,16 +115,24 @@ void TestAILogic(int numtrials)
 
         //Simulate one more game in order to judge the AI's logic
         outcome = SimulateLastGame(AI);
+        printf("%s -> ", action);
+
         switch(outcome)
         {
         case DECISION_BAD:
+            printf("BAD\n");
+            loss_total++;
             fprintf(LOGFILE, "***BAD DECISION***\n\n");
             break;
 
         case DECISION_GOOD:
+            printf("GOOD\n");
+            win_total++;
             fprintf(LOGFILE, "***GOOD DECISION***\n\n");
             break;
         case DECISION_UNLUCKY:
+            printf("UNLUCKY\n");
+            unlucky_total++;
             fprintf(LOGFILE, "***UNLUCKY DECISION***\n\n");
             break;
         }
@@ -130,9 +142,12 @@ void TestAILogic(int numtrials)
     printf("Folding: %10d (%2d good, %2d bad, %2d unlucky)\n", Results.fold, Results.fold_stats.win, Results.fold_stats.loss, Results.fold_stats.unlucky);
     printf("Calling: %10d (%2d good, %2d bad, %2d unlucky)\n", Results.call, Results.call_stats.win, Results.call_stats.loss, Results.call_stats.unlucky);
     printf("Raising: %10d (%2d good, %2d bad, %2d unlucky)\n", Results.bet, Results.bet_stats.win, Results.bet_stats.loss, Results.bet_stats.unlucky);
+    printf("\nTotals: %2d good, %2d bad, %2d unlucky\n", win_total, loss_total, unlucky_total);
+
     total_score = Results.fold + Results.call + Results.bet;
 
-    printf("\nAverage logic score: %6d\n", total_score / numtrials);
+    printf("\nAverage logic score: $%d\n", total_score / numtrials);
+    printf("The AI made the correct decision in %.2lf%% of the tests.\n", (double)win_total * 100 / numtrials);
 }
 
 /*

@@ -1,0 +1,415 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+ACTION_BET	src/common/action.h	/^    ACTION_BET,$/;"	e	enum:action_type
+ACTION_CALL	src/common/action.h	/^    ACTION_CALL,$/;"	e	enum:action_type
+ACTION_FOLD	src/common/action.h	/^    ACTION_FOLD,$/;"	e	enum:action_type
+ACTION_UNSET	src/common/action.h	/^    ACTION_UNSET$/;"	e	enum:action_type
+ARR_LEN	test/unit/evaluatortest.c	3;"	d	file:
+Action	src/common/action.h	/^} Action;$/;"	t	typeref:struct:action
+ActionGetString	src/common/action.c	/^char *ActionGetString(Action *action)$/;"	f
+ActionSetBet	src/common/action.c	/^void ActionSetBet(Action *action, int amount)$/;"	f
+ActionSetCall	src/common/action.c	/^void ActionSetCall(Action *action)$/;"	f
+ActionSetFold	src/common/action.c	/^void ActionSetFold(Action *action)$/;"	f
+ActionType	src/common/action.h	/^} ActionType;$/;"	t	typeref:enum:action_type
+BET_AMOUNT	test/unit/actiontest.c	5;"	d	file:
+BET_RESULT	test/unit/actiontest.c	6;"	d	file:
+BINDIR	Makefile	/^BINDIR	= bin$/;"	m
+BUF_SIZE	src/client/pokerclient.c	12;"	d	file:
+BeginConnectionSession	src/common/urlconnection.c	/^void BeginConnectionSession(void)$/;"	f
+BestOpponentHand	src/common/pokerai.c	/^int BestOpponentHand(int **opponents, int numopponents, int numcards)$/;"	f	file:
+BestOpponentHand	test/ai/ailogictest.c	/^int BestOpponentHand(int **opponents, int numopponents, int numcards)$/;"	f	file:
+CALL_RESULT	test/unit/actiontest.c	4;"	d	file:
+CARDS	src/common/gamestate.c	/^char *CARDS[] = {"XX",                                                  \\$/;"	v
+CC	Makefile	/^CC		= gcc$/;"	m
+CFLAGS	Makefile	/^all: 	CFLAGS = -Wall -Werror -pedantic -std=gnu99 -Wno-unused-result -O3$/;"	m
+CFLAGS	Makefile	/^debug: 	CFLAGS = -Wall -Werror -pedantic -std=gnu99 -g$/;"	m
+CLIBS	Makefile	/^CLIBS	= -lcurl -lm -lpthread$/;"	m
+CLIENTDIR	Makefile	/^CLIENTDIR 		= $(SRCDIR)\/client$/;"	m
+CLIENT_INC	Makefile	/^CLIENT_INC 		= $(foreach d, $(CLIENT_INCSRC), -I$d)$/;"	m
+CLIENT_INCSRC	Makefile	/^CLIENT_INCSRC 	= $(COMMONDIR) $(CLIENTDIR)$/;"	m
+CLIENT_OBJECTS	Makefile	/^CLIENT_OBJECTS 		:= $(patsubst $(CLIENTDIR)\/%.c, $(OBJDIR)\/%.o, $(CLIENT_SOURCES))$/;"	m
+CLIENT_SOURCES	Makefile	/^CLIENT_SOURCES 		= $(wildcard $(CLIENTDIR)\/*.c)$/;"	m
+COLOR_DEFAULT	src/common/evaluator.h	12;"	d
+COLOR_ERROR	src/common/evaluator.h	11;"	d
+COMMONDIR	Makefile	/^COMMONDIR 		= $(SRCDIR)\/common$/;"	m
+COMMON_OBJECTS	Makefile	/^COMMON_OBJECTS 		:= $(patsubst $(COMMONDIR)\/%.c, $(OBJDIR)\/%.o, $(COMMON_SOURCES))$/;"	m
+COMMON_SOURCES	Makefile	/^COMMON_SOURCES 		= $(wildcard $(COMMONDIR)\/*.c)$/;"	m
+CreatePlayer	src/common/player.c	/^Player *CreatePlayer(cJSON *playerjson)$/;"	f
+CreatePokerAI	src/common/pokerai.c	/^PokerAI *CreatePokerAI(int timeout)$/;"	f
+CreateResult	test/unit/tests.c	/^TestResult *CreateResult(int failed, int numtests)$/;"	f
+DECISION_BAD	test/ai/ailogictest.c	/^    DECISION_BAD,$/;"	e	enum:decision_outcome	file:
+DECISION_GOOD	test/ai/ailogictest.c	/^    DECISION_GOOD,$/;"	e	enum:decision_outcome	file:
+DECISION_UNLUCKY	test/ai/ailogictest.c	/^    DECISION_UNLUCKY$/;"	e	enum:decision_outcome	file:
+DEFAULT_HANDRANKS_FILE	src/common/evaluator.h	10;"	d
+DEFAULT_NUM_PLAYING	src/winprob/winprob.c	6;"	d	file:
+DEFAULT_PORT	src/pokerserver/server.py	/^DEFAULT_PORT = 9313$/;"	v
+DecisionOutcome	test/ai/ailogictest.c	/^} DecisionOutcome;$/;"	t	typeref:enum:decision_outcome	file:
+DeleteResult	test/unit/tests.c	/^void DeleteResult(TestResult *result)$/;"	f
+DestroyPlayer	src/common/player.c	/^void DestroyPlayer(Player *player)$/;"	f
+DestroyPokerAI	src/common/pokerai.c	/^void DestroyPokerAI(PokerAI *ai)$/;"	f
+EndConnectionSession	src/common/urlconnection.c	/^void EndConnectionSession(void)$/;"	f
+FLUSH	test/unit/evaluatortest.c	15;"	d	file:
+FLUSH2	test/unit/evaluatortest.c	16;"	d	file:
+FOLD_RESULT	test/unit/actiontest.c	3;"	d	file:
+FOUR_OF_A_KIND	test/unit/evaluatortest.c	19;"	d	file:
+FOUR_OF_A_KIND2	test/unit/evaluatortest.c	20;"	d	file:
+FULL_HOUSE	test/unit/evaluatortest.c	17;"	d	file:
+FULL_HOUSE2	test/unit/evaluatortest.c	18;"	d	file:
+GET_URL	src/client/pokerclient.c	9;"	d	file:
+GET_URL	test/unit/urlconnectiontest.c	3;"	d	file:
+GameState	src/common/gamestate.h	/^} GameState;$/;"	t	typeref:struct:gamestate
+GenerateGameState	test/common/gamestategenerator.c	/^char *GenerateGameState($/;"	f
+GenerateRandomGameState	test/common/gamestategenerator.c	/^char *GenerateRandomGameState(void)$/;"	f
+GetBestAction	src/common/pokerai.c	/^char *GetBestAction(PokerAI *ai)$/;"	f
+GetCardArray	src/common/gamestate.c	/^int GetCardArray(int *cards, cJSON *json)$/;"	f
+GetElapsedTime	src/common/timer.c	/^unsigned long long GetElapsedTime(Timer *timer)$/;"	f
+GetHandValue	src/common/evaluator.c	/^int GetHandValue(int *cards, int num_cards)$/;"	f
+GetNextFreeSeedIndex	src/common/pokerai.c	/^int GetNextFreeSeedIndex(PokerAI *ai)$/;"	f	file:
+GetPhase	src/common/gamestate.c	/^Phase GetPhase(char *phase)$/;"	f	file:
+GetWinProbability	src/common/pokerai.c	/^double GetWinProbability(PokerAI *ai)$/;"	f
+HIGH_CARD	test/unit/evaluatortest.c	5;"	d	file:
+HIGH_CARD2	test/unit/evaluatortest.c	6;"	d	file:
+HR	src/common/evaluator.h	/^int HR[32487834];$/;"	v
+InitEvaluator	src/common/evaluator.c	/^void InitEvaluator(char *handranksfile)$/;"	f
+InitializeTestGameState	test/unit/gamestatetest.c	/^void InitializeTestGameState(void)$/;"	f	file:
+JSON	src/common/gamestate.c	3;"	d	file:
+JSON	src/common/player.c	3;"	d	file:
+JSON	test/unit/evaluatortest.c	24;"	d	file:
+JSON	test/unit/gamestatetest.c	10;"	d	file:
+JSON	test/unit/urlconnectiontest.c	8;"	d	file:
+JSON_ARRAY_ELEM	src/common/gamestate.c	9;"	d	file:
+JSON_INT	src/common/gamestate.c	7;"	d	file:
+JSON_INT	src/common/player.c	7;"	d	file:
+JSON_STRING	src/common/gamestate.c	5;"	d	file:
+JSON_STRING	src/common/player.c	5;"	d	file:
+JSON_STRING	test/unit/urlconnectiontest.c	10;"	d	file:
+LINKER	Makefile	/^LINKER	= gcc -o$/;"	m
+LOGFILE	test/ai/ailogictest.c	/^FILE *LOGFILE;$/;"	v
+LOGFILENAME	test/ai/ailogictest.c	5;"	d	file:
+LOGLEVEL	src/common/pokerai.h	/^} LOGLEVEL;$/;"	t	typeref:enum:loglevel
+LOGLEVEL_DEBUG	src/common/pokerai.h	/^    LOGLEVEL_DEBUG$/;"	e	enum:loglevel
+LOGLEVEL_INFO	src/common/pokerai.h	/^    LOGLEVEL_INFO,$/;"	e	enum:loglevel
+LOGLEVEL_NONE	src/common/pokerai.h	/^    LOGLEVEL_NONE,$/;"	e	enum:loglevel
+MAXBUF	test/common/gamestategenerator.c	3;"	d	file:
+MAX_NAME_LEN	src/common/player.h	10;"	d
+MAX_OPPONENTS	src/common/gamestate.h	14;"	d
+MAX_TRIES	src/client/pokerclient.c	11;"	d	file:
+MICROSECONDS	src/common/timer.c	3;"	d	file:
+MICRO_TO_MILLI	src/common/timer.c	5;"	d	file:
+MINUTE	test/unit/pokeraitest.c	4;"	d	file:
+MakeDecision	src/common/pokerai.c	/^void MakeDecision(PokerAI *ai)$/;"	f	file:
+MyTurn	src/common/pokerai.c	/^bool MyTurn(PokerAI *ai)$/;"	f
+NUM_COMMUNITY	src/common/gamestate.h	12;"	d
+NUM_CORES	test/ai/ailogictest.h	7;"	d
+NUM_DECK	src/common/gamestate.h	13;"	d
+NUM_HAND	src/common/gamestate.h	11;"	d
+NUM_RAISE_LIMIT	src/common/pokerai.h	15;"	d
+OBJDIR	Makefile	/^OBJDIR	= obj$/;"	m
+OBJECTS	Makefile	/^OBJECTS 			:= $(wildcard $(OBJDIR)\/*.o)$/;"	m
+PAIR	test/unit/evaluatortest.c	7;"	d	file:
+PAIR2	test/unit/evaluatortest.c	8;"	d	file:
+PHASE_DEAL	src/common/gamestate.h	/^    PHASE_DEAL,$/;"	e	enum:phase
+PHASE_ERROR	src/common/gamestate.h	/^    PHASE_ERROR$/;"	e	enum:phase
+PHASE_FLOP	src/common/gamestate.h	/^    PHASE_FLOP,$/;"	e	enum:phase
+PHASE_RIVER	src/common/gamestate.h	/^    PHASE_RIVER,$/;"	e	enum:phase
+PHASE_TURN	src/common/gamestate.h	/^    PHASE_TURN,$/;"	e	enum:phase
+POKERLIB_INITIALIZED	src/common/evaluator.c	/^bool POKERLIB_INITIALIZED = false;$/;"	v
+POST_DATA	test/unit/urlconnectiontest.c	5;"	d	file:
+POST_DATA2	test/unit/urlconnectiontest.c	6;"	d	file:
+POST_URL	src/client/pokerclient.c	10;"	d	file:
+POST_URL	test/unit/urlconnectiontest.c	4;"	d	file:
+PRINTERR	src/client/pokerclient.c	14;"	d	file:
+PRINTERR	src/common/urlconnection.c	5;"	d	file:
+Phase	src/common/gamestate.h	/^} Phase;$/;"	t	typeref:enum:phase
+Player	src/common/player.h	/^} Player;$/;"	t	typeref:struct:player
+PokerAI	src/common/pokerai.h	/^} PokerAI;$/;"	t	typeref:struct:pokerai
+PokerClientSetup	src/client/pokerclient.c	/^void PokerClientSetup(char *handranksfile)$/;"	f	file:
+PokerClientShutdown	src/client/pokerclient.c	/^void PokerClientShutdown(void)$/;"	f	file:
+PreflopWinProbability	src/common/pokerai.c	/^double PreflopWinProbability(int *hand)$/;"	f	file:
+PrintCards	src/common/gamestate.c	/^void PrintCards(GameState *game, FILE *logfile)$/;"	f
+PrintPlayers	src/common/gamestate.c	/^void PrintPlayers(GameState *game, FILE *logfile)$/;"	f
+PrintTableInfo	src/common/gamestate.c	/^void PrintTableInfo(GameState *game, FILE *logfile)$/;"	f
+ReleaseSeedIndex	src/common/pokerai.c	/^void ReleaseSeedIndex(PokerAI *ai, int index)$/;"	f	file:
+RemoveCardsFromDeck	src/common/gamestate.c	/^void RemoveCardsFromDeck(bool *deck, int *cards, int numcards)$/;"	f	file:
+RemoveCardsFromDeck	test/common/gamestategenerator.c	/^void RemoveCardsFromDeck(char **deck, int *deckindex, char **cards, int numcards)$/;"	f	file:
+Results	test/ai/ailogictest.c	/^} Results;$/;"	v	typeref:struct:decision_results
+SECOND	test/unit/pokeraitest.c	3;"	d	file:
+SECOND	test/unit/timertest.c	7;"	d	file:
+SEED_COUNT	src/common/pokerai.h	16;"	d
+SET_CURL_USERAGENT	src/common/urlconnection.c	6;"	d	file:
+SMALLBUF	test/common/gamestategenerator.c	4;"	d	file:
+SRCDIR	Makefile	/^SRCDIR	= src$/;"	m
+STRAIGHT	test/unit/evaluatortest.c	13;"	d	file:
+STRAIGHT2	test/unit/evaluatortest.c	14;"	d	file:
+STRAIGHT_FLUSH	test/unit/evaluatortest.c	21;"	d	file:
+STRAIGHT_FLUSH2	test/unit/evaluatortest.c	22;"	d	file:
+SetCommunity	src/common/pokerai.c	/^void SetCommunity(PokerAI *ai, char **community, int communitysize)$/;"	f
+SetGameOpponents	src/common/gamestate.c	/^void SetGameOpponents(GameState *game, cJSON *players)$/;"	f	file:
+SetGameState	src/common/gamestate.c	/^void SetGameState(GameState *game, cJSON *json)$/;"	f
+SetHand	src/common/pokerai.c	/^void SetHand(PokerAI *ai, char **hand, int handsize)$/;"	f
+SetLogging	src/common/pokerai.c	/^void SetLogging(PokerAI *ai, LOGLEVEL level, FILE *file)$/;"	f
+Shuffle	test/common/gamestategenerator.c	/^void Shuffle(char **arr, int size)$/;"	f	file:
+SimulateGames	src/common/pokerai.c	/^void *SimulateGames(void *_ai)$/;"	f	file:
+SimulateLastGame	test/ai/ailogictest.c	/^DecisionOutcome SimulateLastGame(PokerAI *ai)$/;"	f	file:
+SimulateSingleGame	src/common/pokerai.c	/^int SimulateSingleGame(PokerAI *ai, int seed_index)$/;"	f	file:
+SpawnMonteCarloThreads	src/common/pokerai.c	/^void SpawnMonteCarloThreads(PokerAI *ai)$/;"	f	file:
+StartTimer	src/common/timer.c	/^void StartTimer(Timer *timer)$/;"	f
+Stats	test/ai/ailogictest.c	/^} Stats;$/;"	t	typeref:struct:stats	file:
+StopTimer	src/common/timer.c	/^void StopTimer(Timer *timer)$/;"	f
+StringToCard	src/common/gamestate.c	/^int StringToCard(char *card)$/;"	f
+TARGETS	Makefile	/^TARGETS 			:= $(foreach t, $(TARGETS), $(BINDIR)\/$t)$/;"	m
+TARGETS	Makefile	/^TARGETS 			:= pokerclient winprob testall testai$/;"	m
+TESTAIDIR	Makefile	/^TESTAIDIR 		= $(TESTDIR)\/ai$/;"	m
+TESTAI_INC	Makefile	/^TESTAI_INC 		= $(foreach d, $(TESTAI_INCSRC), -I$d)$/;"	m
+TESTAI_INCSRC	Makefile	/^TESTAI_INCSRC 	= $(COMMONDIR) $(TESTCOMMONDIR) $(TESTAIDIR)$/;"	m
+TESTAI_OBJECTS	Makefile	/^TESTAI_OBJECTS 		:= $(patsubst $(TESTAIDIR)\/%.c, $(OBJDIR)\/%.o, $(TESTAI_SOURCES))$/;"	m
+TESTAI_SOURCES	Makefile	/^TESTAI_SOURCES 		= $(wildcard $(TESTAIDIR)\/*.c)$/;"	m
+TESTALLDIR	Makefile	/^TESTALLDIR  	= $(TESTDIR)\/unit$/;"	m
+TESTALL_INC	Makefile	/^TESTALL_INC 	= $(foreach d, $(TESTALL_INCSRC), -I$d)$/;"	m
+TESTALL_INCSRC	Makefile	/^TESTALL_INCSRC 	= $(COMMONDIR) $(TESTCOMMONDIR) $(TESTALLDIR)$/;"	m
+TESTALL_OBJECTS	Makefile	/^TESTALL_OBJECTS 	:= $(patsubst $(TESTALLDIR)\/%.c, $(OBJDIR)\/%.o, $(TESTALL_SOURCES))$/;"	m
+TESTALL_SOURCES	Makefile	/^TESTALL_SOURCES 	= $(wildcard $(TESTALLDIR)\/*.c)$/;"	m
+TESTCOMMONDIR	Makefile	/^TESTCOMMONDIR 	= $(TESTDIR)\/common$/;"	m
+TESTCOMMON_OBJECTS	Makefile	/^TESTCOMMON_OBJECTS 	:= $(patsubst $(TESTCOMMONDIR)\/%.c, $(OBJDIR)\/%.o, $(TESTCOMMON_SOURCES))$/;"	m
+TESTCOMMON_SOURCES	Makefile	/^TESTCOMMON_SOURCES 	= $(wildcard $(TESTCOMMONDIR)\/*.c)$/;"	m
+TESTDIR	Makefile	/^TESTDIR = test$/;"	m
+TEST_COMMUNITY	test/unit/gamestatetest.c	/^int TEST_COMMUNITY[TEST_NUM_COMMUNITY];$/;"	v
+TEST_COMMUNITY_STR	test/unit/gamestatetest.c	6;"	d	file:
+TEST_DECK	test/unit/gamestatetest.c	/^int TEST_DECK[TEST_NUM_DECK];$/;"	v
+TEST_HAND	test/unit/gamestatetest.c	/^int TEST_HAND[TEST_NUM_HAND];$/;"	v
+TEST_HAND_STR	test/unit/gamestatetest.c	4;"	d	file:
+TEST_INC	Makefile	/^TEST_INC 		= $(foreach d, $(TEST_INCSRC), -I$d)$/;"	m
+TEST_INCSRC	Makefile	/^TEST_INCSRC 	= $(COMMONDIR) $(TESTCOMMONDIR)$/;"	m
+TEST_NUM_COMMUNITY	test/unit/gamestatetest.c	5;"	d	file:
+TEST_NUM_DECK	test/unit/gamestatetest.c	8;"	d	file:
+TEST_NUM_HAND	test/unit/gamestatetest.c	3;"	d	file:
+TEST_NUM_OPPONENTS	test/unit/gamestatetest.c	7;"	d	file:
+THREAD_ID	src/common/pokerai.c	4;"	d	file:
+THREE_OF_A_KIND	test/unit/evaluatortest.c	11;"	d	file:
+THREE_OF_A_KIND2	test/unit/evaluatortest.c	12;"	d	file:
+TIMEOUT	src/client/pokerclient.c	8;"	d	file:
+TIMEOUT	src/winprob/winprob.c	7;"	d	file:
+TIMEOUT	test/ai/ailogictest.h	8;"	d
+TIMEOUT	test/unit/testall.c	5;"	d	file:
+TIMER_EPSILON	test/unit/timertest.c	4;"	d	file:
+TIMER_RUNNING	src/common/timer.h	/^    TIMER_RUNNING,$/;"	e	enum:timerstate
+TIMER_STOPPED	src/common/timer.h	/^    TIMER_STOPPED$/;"	e	enum:timerstate
+TWO_PAIR	test/unit/evaluatortest.c	9;"	d	file:
+TWO_PAIR2	test/unit/evaluatortest.c	10;"	d	file:
+TestAILogic	test/ai/ailogictest.c	/^void TestAILogic(int numtrials)$/;"	f
+TestAction	test/unit/actiontest.c	/^TestResult *TestAction(void)$/;"	f
+TestEvaluator	test/unit/evaluatortest.c	/^TestResult *TestEvaluator(void)$/;"	f
+TestGameState	test/unit/gamestatetest.c	/^TestResult *TestGameState(void)$/;"	f
+TestPokerAI	test/unit/pokeraitest.c	/^void TestPokerAI(int timeout)$/;"	f
+TestResult	test/unit/tests.h	/^} TestResult;$/;"	t	typeref:struct:testresult
+TestTimer	test/unit/timertest.c	/^TestResult *TestTimer(void)$/;"	f
+TestURLConnection	test/unit/urlconnectiontest.c	/^TestResult *TestURLConnection(void)$/;"	f
+Timer	src/common/timer.h	/^} Timer;$/;"	t	typeref:struct:timer
+TimerState	src/common/timer.h	/^} TimerState;$/;"	t	typeref:enum:timerstate
+USERAGENT	src/common/urlconnection.c	3;"	d	file:
+UpdateGameDeck	src/common/gamestate.c	/^void UpdateGameDeck(GameState *game)$/;"	f
+UpdateGameState	src/common/pokerai.c	/^void UpdateGameState(PokerAI *ai, cJSON *new_state)$/;"	f
+WINPROBDIR	Makefile	/^WINPROBDIR 		= $(SRCDIR)\/winprob$/;"	m
+WINPROB_BIN_LOC	src/pokerserver/cgi/poker.py	/^WINPROB_BIN_LOC = "%s\/scratch\/C-Poker-AI\/winprob" % (os.getenv("HOME"))$/;"	v
+WINPROB_INC	Makefile	/^WINPROB_INC		= $(foreach d, $(WINPROB_INCSRC), -I$d)$/;"	m
+WINPROB_INCSRC	Makefile	/^WINPROB_INCSRC  = $(COMMONDIR) $(WINPROBDIR)$/;"	m
+WINPROB_OBJECTS	Makefile	/^WINPROB_OBJECTS 	:= $(patsubst $(WINPROBDIR)\/%.c, $(OBJDIR)\/%.o, $(WINPROB_SOURCES))$/;"	m
+WINPROB_SOURCES	Makefile	/^WINPROB_SOURCES 	= $(wildcard $(WINPROBDIR)\/*.c)$/;"	m
+WriteAction	src/common/pokerai.c	/^void WriteAction(PokerAI *ai, FILE *file)$/;"	f
+WriteMemoryCallback	src/common/urlconnection.c	/^size_t WriteMemoryCallback($/;"	f	file:
+__ACTION_H__	src/common/action.h	2;"	d
+__AI_LOGIC_TEST_H__	test/ai/ailogictest.h	2;"	d
+__EVALUATOR_H__	src/common/evaluator.h	2;"	d
+__GAMESTATE_GENERATOR_H__	test/common/gamestategenerator.h	2;"	d
+__GAMESTATE_H__	src/common/gamestate.h	2;"	d
+__PLAYER_H__	src/common/player.h	2;"	d
+__POKER_AI_H__	src/common/pokerai.h	2;"	d
+__TESTS_H__	test/unit/tests.h	2;"	d
+__TIMER_H__	src/common/timer.h	2;"	d
+__URL_CONNECTION_H__	src/common/urlconnection.h	2;"	d
+action	src/common/action.h	/^typedef struct action$/;"	s
+action	src/common/pokerai.h	/^    Action action;$/;"	m	struct:pokerai
+action_type	src/common/action.h	/^typedef enum action_type$/;"	g
+amount	src/common/action.h	/^    int amount;$/;"	m	struct:action
+begin	src/common/timer.h	/^    struct timeval begin;$/;"	m	struct:timer	typeref:struct:timer::timeval
+bet	test/ai/ailogictest.c	/^    int bet;$/;"	m	struct:decision_results	file:
+bet_stats	test/ai/ailogictest.c	/^    Stats bet_stats;$/;"	m	struct:decision_results	file:
+bluff	src/common/action.h	/^    bool bluff;$/;"	m	struct:action
+cJSON	src/common/cJSON.h	/^typedef struct cJSON {$/;"	s
+cJSON	src/common/cJSON.h	/^} cJSON;$/;"	t	typeref:struct:cJSON
+cJSON_AddBoolToObject	src/common/cJSON.h	132;"	d
+cJSON_AddFalseToObject	src/common/cJSON.h	131;"	d
+cJSON_AddItemReferenceToArray	src/common/cJSON.c	/^void	cJSON_AddItemReferenceToArray(cJSON *array, cJSON *item)						{cJSON_AddItemToArray(array,create_reference(item));}$/;"	f
+cJSON_AddItemReferenceToObject	src/common/cJSON.c	/^void	cJSON_AddItemReferenceToObject(cJSON *object,const char *string,cJSON *item)	{cJSON_AddItemToObject(object,string,create_reference(item));}$/;"	f
+cJSON_AddItemToArray	src/common/cJSON.c	/^void   cJSON_AddItemToArray(cJSON *array, cJSON *item)						{cJSON *c=array->child;if (!item) return; if (!c) {array->child=item;} else {while (c && c->next) c=c->next; suffix_object(c,item);}}$/;"	f
+cJSON_AddItemToObject	src/common/cJSON.c	/^void   cJSON_AddItemToObject(cJSON *object,const char *string,cJSON *item)	{if (!item) return; if (item->string) cJSON_free(item->string);item->string=cJSON_strdup(string);cJSON_AddItemToArray(object,item);}$/;"	f
+cJSON_AddNullToObject	src/common/cJSON.h	129;"	d
+cJSON_AddNumberToObject	src/common/cJSON.h	133;"	d
+cJSON_AddStringToObject	src/common/cJSON.h	134;"	d
+cJSON_AddTrueToObject	src/common/cJSON.h	130;"	d
+cJSON_Array	src/common/cJSON.h	37;"	d
+cJSON_CreateArray	src/common/cJSON.c	/^cJSON *cJSON_CreateArray(void)					{cJSON *item=cJSON_New_Item();if(item)item->type=cJSON_Array;return item;}$/;"	f
+cJSON_CreateBool	src/common/cJSON.c	/^cJSON *cJSON_CreateBool(int b)					{cJSON *item=cJSON_New_Item();if(item)item->type=b?cJSON_True:cJSON_False;return item;}$/;"	f
+cJSON_CreateDoubleArray	src/common/cJSON.c	/^cJSON *cJSON_CreateDoubleArray(const double *numbers,int count)	{int i;cJSON *n=0,*p=0,*a=cJSON_CreateArray();for(i=0;a && i<count;i++){n=cJSON_CreateNumber(numbers[i]);if(!i)a->child=n;else suffix_object(p,n);p=n;}return a;}$/;"	f
+cJSON_CreateFalse	src/common/cJSON.c	/^cJSON *cJSON_CreateFalse(void)					{cJSON *item=cJSON_New_Item();if(item)item->type=cJSON_False;return item;}$/;"	f
+cJSON_CreateFloatArray	src/common/cJSON.c	/^cJSON *cJSON_CreateFloatArray(const float *numbers,int count)	{int i;cJSON *n=0,*p=0,*a=cJSON_CreateArray();for(i=0;a && i<count;i++){n=cJSON_CreateNumber(numbers[i]);if(!i)a->child=n;else suffix_object(p,n);p=n;}return a;}$/;"	f
+cJSON_CreateIntArray	src/common/cJSON.c	/^cJSON *cJSON_CreateIntArray(const int *numbers,int count)		{int i;cJSON *n=0,*p=0,*a=cJSON_CreateArray();for(i=0;a && i<count;i++){n=cJSON_CreateNumber(numbers[i]);if(!i)a->child=n;else suffix_object(p,n);p=n;}return a;}$/;"	f
+cJSON_CreateNull	src/common/cJSON.c	/^cJSON *cJSON_CreateNull(void)					{cJSON *item=cJSON_New_Item();if(item)item->type=cJSON_NULL;return item;}$/;"	f
+cJSON_CreateNumber	src/common/cJSON.c	/^cJSON *cJSON_CreateNumber(double num)			{cJSON *item=cJSON_New_Item();if(item){item->type=cJSON_Number;item->valuedouble=num;item->valueint=(int)num;}return item;}$/;"	f
+cJSON_CreateObject	src/common/cJSON.c	/^cJSON *cJSON_CreateObject(void)					{cJSON *item=cJSON_New_Item();if(item)item->type=cJSON_Object;return item;}$/;"	f
+cJSON_CreateString	src/common/cJSON.c	/^cJSON *cJSON_CreateString(const char *string)	{cJSON *item=cJSON_New_Item();if(item){item->type=cJSON_String;item->valuestring=cJSON_strdup(string);}return item;}$/;"	f
+cJSON_CreateStringArray	src/common/cJSON.c	/^cJSON *cJSON_CreateStringArray(const char **strings,int count)	{int i;cJSON *n=0,*p=0,*a=cJSON_CreateArray();for(i=0;a && i<count;i++){n=cJSON_CreateString(strings[i]);if(!i)a->child=n;else suffix_object(p,n);p=n;}return a;}$/;"	f
+cJSON_CreateTrue	src/common/cJSON.c	/^cJSON *cJSON_CreateTrue(void)					{cJSON *item=cJSON_New_Item();if(item)item->type=cJSON_True;return item;}$/;"	f
+cJSON_Delete	src/common/cJSON.c	/^void cJSON_Delete(cJSON *c)$/;"	f
+cJSON_DeleteItemFromArray	src/common/cJSON.c	/^void   cJSON_DeleteItemFromArray(cJSON *array,int which)			{cJSON_Delete(cJSON_DetachItemFromArray(array,which));}$/;"	f
+cJSON_DeleteItemFromObject	src/common/cJSON.c	/^void   cJSON_DeleteItemFromObject(cJSON *object,const char *string) {cJSON_Delete(cJSON_DetachItemFromObject(object,string));}$/;"	f
+cJSON_DetachItemFromArray	src/common/cJSON.c	/^cJSON *cJSON_DetachItemFromArray(cJSON *array,int which)			{cJSON *c=array->child;while (c && which>0) c=c->next,which--;if (!c) return 0;$/;"	f
+cJSON_DetachItemFromObject	src/common/cJSON.c	/^cJSON *cJSON_DetachItemFromObject(cJSON *object,const char *string) {int i=0;cJSON *c=object->child;while (c && cJSON_strcasecmp(c->string,string)) i++,c=c->next;if (c) return cJSON_DetachItemFromArray(object,i);return 0;}$/;"	f
+cJSON_Duplicate	src/common/cJSON.c	/^cJSON *cJSON_Duplicate(cJSON *item,int recurse)$/;"	f
+cJSON_False	src/common/cJSON.h	32;"	d
+cJSON_GetArrayItem	src/common/cJSON.c	/^cJSON *cJSON_GetArrayItem(cJSON *array,int item)				{cJSON *c=array->child;  while (c && item>0) item--,c=c->next; return c;}$/;"	f
+cJSON_GetArraySize	src/common/cJSON.c	/^int    cJSON_GetArraySize(cJSON *array)							{cJSON *c=array->child;int i=0;while(c)i++,c=c->next;return i;}$/;"	f
+cJSON_GetErrorPtr	src/common/cJSON.c	/^const char *cJSON_GetErrorPtr(void) {return ep;}$/;"	f
+cJSON_GetObjectItem	src/common/cJSON.c	/^cJSON *cJSON_GetObjectItem(cJSON *object,const char *string)	{cJSON *c=object->child; while (c && cJSON_strcasecmp(c->string,string)) c=c->next; return c;}$/;"	f
+cJSON_Hooks	src/common/cJSON.h	/^typedef struct cJSON_Hooks {$/;"	s
+cJSON_Hooks	src/common/cJSON.h	/^} cJSON_Hooks;$/;"	t	typeref:struct:cJSON_Hooks
+cJSON_InitHooks	src/common/cJSON.c	/^void cJSON_InitHooks(cJSON_Hooks* hooks)$/;"	f
+cJSON_IsReference	src/common/cJSON.h	40;"	d
+cJSON_Minify	src/common/cJSON.c	/^void cJSON_Minify(char *json)$/;"	f
+cJSON_NULL	src/common/cJSON.h	34;"	d
+cJSON_New_Item	src/common/cJSON.c	/^static cJSON *cJSON_New_Item(void)$/;"	f	file:
+cJSON_Number	src/common/cJSON.h	35;"	d
+cJSON_Object	src/common/cJSON.h	38;"	d
+cJSON_Parse	src/common/cJSON.c	/^cJSON *cJSON_Parse(const char *value) {return cJSON_ParseWithOpts(value,0,0);}$/;"	f
+cJSON_ParseWithOpts	src/common/cJSON.c	/^cJSON *cJSON_ParseWithOpts(const char *value,const char **return_parse_end,int require_null_terminated)$/;"	f
+cJSON_Print	src/common/cJSON.c	/^char *cJSON_Print(cJSON *item)				{return print_value(item,0,1);}$/;"	f
+cJSON_PrintUnformatted	src/common/cJSON.c	/^char *cJSON_PrintUnformatted(cJSON *item)	{return print_value(item,0,0);}$/;"	f
+cJSON_ReplaceItemInArray	src/common/cJSON.c	/^void   cJSON_ReplaceItemInArray(cJSON *array,int which,cJSON *newitem)		{cJSON *c=array->child;while (c && which>0) c=c->next,which--;if (!c) return;$/;"	f
+cJSON_ReplaceItemInObject	src/common/cJSON.c	/^void   cJSON_ReplaceItemInObject(cJSON *object,const char *string,cJSON *newitem){int i=0;cJSON *c=object->child;while(c && cJSON_strcasecmp(c->string,string))i++,c=c->next;if(c){newitem->string=cJSON_strdup(string);cJSON_ReplaceItemInArray(object,i,newitem);}}$/;"	f
+cJSON_SetIntValue	src/common/cJSON.h	137;"	d
+cJSON_String	src/common/cJSON.h	36;"	d
+cJSON_True	src/common/cJSON.h	33;"	d
+cJSON__h	src/common/cJSON.h	24;"	d
+cJSON_free	src/common/cJSON.c	/^static void (*cJSON_free)(void *ptr) = free;$/;"	v	file:
+cJSON_malloc	src/common/cJSON.c	/^static void *(*cJSON_malloc)(size_t sz) = malloc;$/;"	v	file:
+cJSON_strcasecmp	src/common/cJSON.c	/^static int cJSON_strcasecmp(const char *s1,const char *s2)$/;"	f	file:
+cJSON_strdup	src/common/cJSON.c	/^static char* cJSON_strdup(const char* str)$/;"	f	file:
+call	test/ai/ailogictest.c	/^    int call;$/;"	m	struct:decision_results	file:
+call_amount	src/common/gamestate.h	/^    int call_amount;$/;"	m	struct:gamestate
+call_stats	test/ai/ailogictest.c	/^    Stats call_stats;$/;"	m	struct:decision_results	file:
+cards	test/unit/evaluatortest.c	/^int *cards;$/;"	v
+child	src/common/cJSON.h	/^	struct cJSON *child;		\/* An array or object item will have a child pointer pointing to a chain of the items in the array\/object. *\/$/;"	m	struct:cJSON	typeref:struct:cJSON::cJSON
+community	src/common/gamestate.h	/^    int community[NUM_COMMUNITY];$/;"	m	struct:gamestate
+communitysize	src/common/gamestate.h	/^    int communitysize;$/;"	m	struct:gamestate
+create_reference	src/common/cJSON.c	/^static cJSON *create_reference(cJSON *item) {cJSON *ref=cJSON_New_Item();if (!ref) return 0;memcpy(ref,item,sizeof(cJSON));ref->string=0;ref->type|=cJSON_IsReference;ref->next=ref->prev=0;return ref;}$/;"	f	file:
+current_bet	src/common/gamestate.h	/^    int current_bet;$/;"	m	struct:gamestate
+current_bet	src/common/player.h	/^    int current_bet;$/;"	m	struct:player
+current_pot	src/common/gamestate.h	/^    int current_pot;$/;"	m	struct:gamestate
+data	src/common/urlconnection.c	/^    char *data;$/;"	m	struct:pagecontents	file:
+decision_outcome	test/ai/ailogictest.c	/^typedef enum decision_outcome$/;"	g	file:
+decision_results	test/ai/ailogictest.c	/^struct decision_results$/;"	s	file:
+deck	src/common/gamestate.h	/^    bool deck[NUM_DECK];$/;"	m	struct:gamestate
+draw	src/common/pokerai.c	/^int draw(int *deck, int *psize, int rand_num)$/;"	f	file:
+draw	test/ai/ailogictest.c	/^int draw(int *deck, int *psize)$/;"	f	file:
+elapsed	src/common/timer.h	/^    unsigned long long elapsed;$/;"	m	struct:timer
+ep	src/common/cJSON.c	/^static const char *ep;$/;"	v	file:
+error_redirect	src/pokerserver/cgi/poker.py	/^def error_redirect(location, error=None):$/;"	f
+expectedgain	src/common/action.h	/^    double expectedgain;$/;"	m	struct:action
+failed	test/unit/tests.h	/^    int failed;$/;"	m	struct:testresult
+firstByteMark	src/common/cJSON.c	/^static const unsigned char firstByteMark[7] = { 0x00, 0x00, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC };$/;"	v	file:
+fold	test/ai/ailogictest.c	/^    int fold;$/;"	m	struct:decision_results	file:
+fold_stats	test/ai/ailogictest.c	/^    Stats fold_stats;$/;"	m	struct:decision_results	file:
+folded	src/common/player.h	/^    bool folded;$/;"	m	struct:player
+free_fn	src/common/cJSON.h	/^      void (*free_fn)(void *ptr);$/;"	m	struct:cJSON_Hooks
+game	src/common/pokerai.h	/^    GameState game;$/;"	m	struct:pokerai
+games_simulated	src/common/pokerai.h	/^    int games_simulated;$/;"	m	struct:pokerai
+games_won	src/common/pokerai.h	/^    int games_won;$/;"	m	struct:pokerai
+gamestate	src/common/gamestate.h	/^typedef struct gamestate$/;"	s
+gamestate	test/unit/gamestatetest.c	/^const char *gamestate = \\$/;"	v
+gamestate1	test/common/gamestategenerator.c	/^const char *gamestate1 = \\$/;"	v
+gamestate2	test/common/gamestategenerator.c	/^const char *gamestate2 = \\$/;"	v
+gamestate3	test/common/gamestategenerator.c	/^const char *gamestate3 = \\$/;"	v
+gamestate4	test/common/gamestategenerator.c	/^const char *gamestate4 = \\$/;"	v
+get_svg	src/pokerserver/cgi/poker.py	/^def get_svg(cards):$/;"	f
+hand	src/common/gamestate.h	/^    int hand[NUM_HAND];$/;"	m	struct:gamestate
+handle_request	src/pokerserver/cgi/poker.py	/^def handle_request():$/;"	f
+handsize	src/common/gamestate.h	/^    int handsize;$/;"	m	struct:gamestate
+httpGet	src/common/urlconnection.c	/^char *httpGet(char *url)$/;"	f
+httpGetJSON	src/common/urlconnection.c	/^cJSON *httpGetJSON(char *url)$/;"	f
+httpPost	src/common/urlconnection.c	/^char *httpPost(char *url, char *postfields)$/;"	f
+httpPostJSON	src/common/urlconnection.c	/^cJSON *httpPostJSON(char *url, char *postfields)$/;"	f
+initial_stack	src/common/gamestate.h	/^    int initial_stack;$/;"	m	struct:gamestate
+initial_stack	src/common/player.h	/^    int initial_stack;$/;"	m	struct:player
+logfile	src/common/pokerai.h	/^    FILE *logfile;$/;"	m	struct:pokerai
+loglevel	src/common/pokerai.h	/^    LOGLEVEL loglevel;$/;"	m	struct:pokerai
+loglevel	src/common/pokerai.h	/^typedef enum loglevel$/;"	g
+loss	test/ai/ailogictest.c	/^    int loss;$/;"	m	struct:stats	file:
+main	src/client/pokerclient.c	/^int main(int argc, char **argv)$/;"	f
+main	src/winprob/winprob.c	/^int main(int argc, char **argv)$/;"	f
+main	test/ai/ailogictest.c	/^int main(int argc, char **argv)$/;"	f
+main	test/unit/testall.c	/^int main(int argc, char **argv)$/;"	f
+malloc_fn	src/common/cJSON.h	/^      void *(*malloc_fn)(size_t sz);$/;"	m	struct:cJSON_Hooks
+mutex	src/common/pokerai.h	/^    pthread_mutex_t mutex;$/;"	m	struct:pokerai
+name	src/common/player.h	/^    char name[MAX_NAME_LEN + 1];$/;"	m	struct:player
+next	src/common/cJSON.h	/^	struct cJSON *next,*prev;	\/* next\/prev allow you to walk array\/object chains. Alternatively, use GetArraySize\/GetArrayItem\/GetObjectItem *\/$/;"	m	struct:cJSON	typeref:struct:cJSON::cJSON
+num_opponents	src/common/gamestate.h	/^    int num_opponents;$/;"	m	struct:gamestate
+num_playing	src/common/gamestate.h	/^    int num_playing;$/;"	m	struct:gamestate
+num_threads	src/common/pokerai.h	/^    int num_threads;$/;"	m	struct:pokerai
+num_times_raised	src/common/pokerai.h	/^    int num_times_raised;$/;"	m	struct:pokerai
+numtests	test/unit/tests.h	/^    int numtests;$/;"	m	struct:testresult
+opponents	src/common/gamestate.h	/^    Player opponents[MAX_OPPONENTS];$/;"	m	struct:gamestate
+pagecontents	src/common/urlconnection.c	/^struct pagecontents$/;"	s	file:
+parse_array	src/common/cJSON.c	/^static const char *parse_array(cJSON *item,const char *value)$/;"	f	file:
+parse_hex4	src/common/cJSON.c	/^static unsigned parse_hex4(const char *str)$/;"	f	file:
+parse_number	src/common/cJSON.c	/^static const char *parse_number(cJSON *item,const char *num)$/;"	f	file:
+parse_object	src/common/cJSON.c	/^static const char *parse_object(cJSON *item,const char *value)$/;"	f	file:
+parse_string	src/common/cJSON.c	/^static const char *parse_string(cJSON *item,const char *str)$/;"	f	file:
+parse_value	src/common/cJSON.c	/^static const char *parse_value(cJSON *item,const char *value)$/;"	f	file:
+phase	src/common/gamestate.h	/^    Phase phase;$/;"	m	struct:gamestate
+phase	src/common/gamestate.h	/^typedef enum phase$/;"	g
+player	src/common/player.h	/^typedef struct player$/;"	s
+pokerai	src/common/pokerai.h	/^typedef struct pokerai$/;"	s
+prev	src/common/cJSON.h	/^	struct cJSON *next,*prev;	\/* next\/prev allow you to walk array\/object chains. Alternatively, use GetArraySize\/GetArrayItem\/GetObjectItem *\/$/;"	m	struct:cJSON	typeref:struct:cJSON::
+print_array	src/common/cJSON.c	/^static char *print_array(cJSON *item,int depth,int fmt)$/;"	f	file:
+print_html_content_type	src/pokerserver/cgi/poker.py	/^def print_html_content_type():$/;"	f
+print_number	src/common/cJSON.c	/^static char *print_number(cJSON *item)$/;"	f	file:
+print_object	src/common/cJSON.c	/^static char *print_object(cJSON *item,int depth,int fmt)$/;"	f	file:
+print_results	src/pokerserver/cgi/poker.py	/^def print_results(result_parameters):$/;"	f
+print_string	src/common/cJSON.c	/^static char *print_string(cJSON *item)	{return print_string_ptr(item->valuestring);}$/;"	f	file:
+print_string_ptr	src/common/cJSON.c	/^static char *print_string_ptr(const char *str)$/;"	f	file:
+print_usage	src/pokerserver/server.py	/^def print_usage():$/;"	f
+print_value	src/common/cJSON.c	/^static char *print_value(cJSON *item,int depth,int fmt)$/;"	f	file:
+rm	Makefile	/^rm		= rm -f$/;"	m
+round_id	src/common/gamestate.h	/^    int round_id;$/;"	m	struct:gamestate
+scoreJSON	test/unit/evaluatortest.c	/^int scoreJSON(char *jsontext)$/;"	f	file:
+seed_avail	src/common/pokerai.h	/^    bool *seed_avail;$/;"	m	struct:pokerai
+seed_mutex	src/common/pokerai.h	/^    pthread_mutex_t seed_mutex;$/;"	m	struct:pokerai
+seeds	src/common/pokerai.h	/^    int *seeds;$/;"	m	struct:pokerai
+size	src/common/urlconnection.c	/^    size_t size;$/;"	m	struct:pagecontents	file:
+skip	src/common/cJSON.c	/^static const char *skip(const char *in) {while (in && *in && (unsigned char)*in<=32) in++; return in;}$/;"	f	file:
+stack	src/common/gamestate.h	/^    int stack;$/;"	m	struct:gamestate
+stack	src/common/player.h	/^    int stack;$/;"	m	struct:player
+start_server	src/pokerserver/server.py	/^def start_server():$/;"	f
+state	src/common/timer.h	/^    TimerState state;$/;"	m	struct:timer
+stats	test/ai/ailogictest.c	/^typedef struct stats$/;"	s	file:
+string	src/common/action.h	/^    char string[256];$/;"	m	struct:action
+string	src/common/cJSON.h	/^	char *string;				\/* The item's name string, if this item is the child of, or is in the list of subitems of an object. *\/$/;"	m	struct:cJSON
+suffix_object	src/common/cJSON.c	/^static void suffix_object(cJSON *prev,cJSON *item) {prev->next=item;item->prev=prev;}$/;"	f	file:
+testresult	test/unit/tests.h	/^typedef struct testresult$/;"	s
+threads	src/common/pokerai.h	/^    pthread_t *threads;$/;"	m	struct:pokerai
+timeout	src/common/pokerai.h	/^    int timeout;$/;"	m	struct:pokerai
+timer	src/common/timer.h	/^typedef struct timer$/;"	s
+timerstate	src/common/timer.h	/^typedef enum timerstate$/;"	g
+type	src/common/action.h	/^    ActionType type;$/;"	m	struct:action
+type	src/common/cJSON.h	/^	int type;					\/* The type of the item, as above. *\/$/;"	m	struct:cJSON
+unlucky	test/ai/ailogictest.c	/^    int unlucky;$/;"	m	struct:stats	file:
+valuedouble	src/common/cJSON.h	/^	double valuedouble;			\/* The item's number, if type==cJSON_Number *\/$/;"	m	struct:cJSON
+valueint	src/common/cJSON.h	/^	int valueint;				\/* The item's number, if type==cJSON_Number *\/$/;"	m	struct:cJSON
+valuestring	src/common/cJSON.h	/^	char *valuestring;			\/* The item's string, if type==cJSON_String *\/$/;"	m	struct:cJSON
+win	test/ai/ailogictest.c	/^    int win;$/;"	m	struct:stats	file:
+winprob	src/common/action.h	/^    double winprob;$/;"	m	struct:action
+your_turn	src/common/gamestate.h	/^    bool your_turn;$/;"	m	struct:gamestate

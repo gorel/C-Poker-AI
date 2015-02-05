@@ -13,6 +13,7 @@
 #include "timer.h"
 
 #define NUM_RAISE_LIMIT     2
+#define SEED_COUNT          100
 
 typedef enum loglevel
 {
@@ -29,6 +30,11 @@ typedef struct pokerai
     int num_threads;
     int timeout;
 
+    //Random seeds for worker threads
+    pthread_mutex_t seed_mutex;
+    bool *seed_avail;
+    int *seeds;
+
     //Scoring
     int games_won;
     int games_simulated;
@@ -43,6 +49,9 @@ typedef struct pokerai
     //Logging for debugging purposes
     LOGLEVEL loglevel;
     FILE *logfile;
+
+    //Heuristics!
+    //TODO
 } PokerAI;
 
 /*

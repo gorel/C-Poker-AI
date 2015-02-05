@@ -29,20 +29,22 @@ void *SimulateGames(void *_ai);
 /*
  * Simulate a single poker game for the given AI
  * ai: the poker AI to simulate games for
+ * seed_index: which seed the thread will use for rand()
  * return: 1 on AI win, 0 on AI lose
  */
 static
-int SimulateSingleGame(PokerAI *ai);
+int SimulateSingleGame(PokerAI *ai, int seed_index);
 
 /*
  * Randomly draw a card from the deck
  * and remove that card from the deck
  * deck: the deck to draw a card from
  * psize: a pointer to the size of the deck
+ * rand_num: the random number to use in the draw
  * return: a random card from the deck
  */
 static
-int draw(int *deck, int *psize);
+int draw(int *deck, int *psize, int rand_num);
 
 /*
  * Calculate the maximum opponent score
@@ -63,6 +65,20 @@ static
 void MakeDecision(PokerAI *ai);
 
 /*
+ * Get the next free seed index of the AI
+ * ai: the AI to get the next seed index from
+ * return: the next free seed index
+ */
+static
+int GetNextFreeSeedIndex(PokerAI *ai);
+
+/* Release a held seed index
+ * ai: the AI to release the seed index to
+ */
+static
+void ReleaseSeedIndex(PokerAI *ai, int index);
+
+/*
  * Create a new PokerAI
  *
  * timeout: how long (in milliseconds) each thread may simulate games
@@ -70,7 +86,7 @@ void MakeDecision(PokerAI *ai);
  */
 PokerAI *CreatePokerAI(int timeout)
 {
-    PokerAI *ai = malloc(sizeof(PokerAI));
+    PokerAI *ai = malloc(sizeof(*ai));
     int num_threads = sysconf(_SC_NPROCESSORS_ONLN);
 
     //Allocate worker thread members
@@ -78,6 +94,16 @@ PokerAI *CreatePokerAI(int timeout)
     ai->timeout = timeout;
     ai->threads = malloc(sizeof(pthread_t) * num_threads);
     pthread_mutex_init(&ai->mutex, NULL);
+
+    //Create random seeds for the worker threads
+    ai->seed_avail = malloc(sizeof(*ai->seeds) * num_threads);
+    ai->seeds = malloc(sizeof(*ai->seeds) * num_threads);
+    pthread_mutex_init(&ai->seed_mutex, NULL);
+    for (int i = 0; i < num_threads; i++)
+    {
+        ai->seed_avail[i] = true;
+        ai->seeds[i] = rand();
+    }
 
     //Set the initial state to no other players
     ai->game.num_opponents = 0;
@@ -101,6 +127,9 @@ void DestroyPokerAI(PokerAI *ai)
     }
 
     pthread_mutex_destroy(&ai->mutex);
+    pthread_mutex_destroy(&ai->seed_mutex);
+
+    free(ai->seeds);
     free(ai->threads);
     free(ai);
 }
@@ -253,7 +282,11 @@ double GetWinProbability(PokerAI *ai)
         if (ai->loglevel >= LOGLEVEL_INFO)
         {
             //Human-readable output
-            if (ai->games_simulated > 1000)
+            if (ai->games_simulated > 1000000)
+            {
+                fprintf(ai->logfile, "Simulated %.3fM games.\n", (double)ai->games_simulated / 1000000);
+            }
+            else if (ai->games_simulated > 1000)
             {
                 fprintf(ai->logfile, "Simulated %dk games.\n", ai->games_simulated / 1000);
             }
@@ -407,10 +440,11 @@ void *SimulateGames(void *_ai)
 {
     PokerAI *ai = (PokerAI *)_ai;
     Timer timer;
+    int seed_index = GetNextFreeSeedIndex(ai);
 
     if (ai->loglevel >= LOGLEVEL_DEBUG)
     {
-        fprintf(ai->logfile, "[Thread %u] starting\n", THREAD_ID);
+        fprintf(ai->logfile, "[Thread %u] starting (obtained seed index %d)\n", THREAD_ID, seed_index);
     }
 
     int simulated = 0;
@@ -425,7 +459,7 @@ void *SimulateGames(void *_ai)
             break;
         }
 
-        won += SimulateSingleGame(ai);
+        won += SimulateSingleGame(ai, seed_index);
         simulated++;
     }
 
@@ -433,6 +467,9 @@ void *SimulateGames(void *_ai)
     {
         fprintf(ai->logfile, "[Thread %u] done\t(simulated %d games)\n", THREAD_ID, simulated);
     }
+
+    //Release our random seed
+    ReleaseSeedIndex(ai, seed_index);
 
     //Lock the AI mutex and update the totals
     pthread_mutex_lock(&ai->mutex);
@@ -446,10 +483,11 @@ void *SimulateGames(void *_ai)
 /*
  * Simulate a single poker game for the given AI
  * ai: the poker AI to simulate games for
+ * seed_index: which seed the thread will use for rand()
  * return: AI_WIN on AI win or AI_LOSE on AI lose
  */
 static
-int SimulateSingleGame(PokerAI *ai)
+int SimulateSingleGame(PokerAI *ai, int seed_index)
 {
     GameState *game = &ai->game;
     int me[NUM_HAND + NUM_COMMUNITY];
@@ -457,6 +495,7 @@ int SimulateSingleGame(PokerAI *ai)
     int community[NUM_COMMUNITY];
     int myscore;
     int bestopponent;
+    int rand_num;
 
     for (int i = 0; i < game->num_playing; i++)
     {
@@ -486,7 +525,9 @@ int SimulateSingleGame(PokerAI *ai)
     //Distribute the rest of the community cards
     for (int i = game->communitysize; i < NUM_COMMUNITY; i++)
     {
-        community[i] = draw(deck, &decksize);
+        ai->seeds[seed_index] = rand_r((unsigned int *)&ai->seeds[seed_index]);
+        rand_num = ai->seeds[seed_index];
+        community[i] = draw(deck, &decksize, rand_num);
     }
 
     //Give each opponent their cards
@@ -495,7 +536,9 @@ int SimulateSingleGame(PokerAI *ai)
         //Personal cards
         for (int i = 0; i < NUM_HAND; i++)
         {
-            opponents[opp][i] = draw(deck, &decksize);
+            ai->seeds[seed_index] = rand_r((unsigned int *)&ai->seeds[seed_index]);
+            rand_num = ai->seeds[seed_index];
+            opponents[opp][i] = draw(deck, &decksize, rand_num);
         }
 
         //Community cards
@@ -534,12 +577,13 @@ int SimulateSingleGame(PokerAI *ai)
  * and remove that card from the deck
  * deck: the deck to draw a card from
  * psize: a pointer to the size of the deck
+ * rand_num: the random number to use in the draw
  * return: a random card from the deck
  */
 static
-int draw(int *deck, int *psize)
+int draw(int *deck, int *psize, int rand_num)
 {
-    int index = rand() % *psize;
+    int index = rand_num % *psize;
     int value = deck[index];
     deck[index] = deck[*psize - 1];
     *psize -= 1;
@@ -675,4 +719,41 @@ void MakeDecision(PokerAI *ai)
     {
         ai->action.type = ACTION_CALL;
     }
+}
+
+/*
+ * Get the next free seed index of the AI
+ * ai: the AI to get the next seed index from
+ * return: the next free seed index
+ */
+static
+int GetNextFreeSeedIndex(PokerAI *ai)
+{
+    int index = -1;
+
+    pthread_mutex_lock(&ai->seed_mutex);
+
+    for (int i = 0; i < ai->num_threads; i++)
+    {
+        if (ai->seed_avail[i])
+        {
+            ai->seed_avail[i] = false;
+            index = i;
+            break;
+        }
+    }
+
+    pthread_mutex_unlock(&ai->seed_mutex);
+    return index;
+}
+
+/* Release a held seed index
+ * ai: the AI to release the seed index to
+ */
+static
+void ReleaseSeedIndex(PokerAI *ai, int index)
+{
+    pthread_mutex_lock(&ai->seed_mutex);
+    ai->seed_avail[index] = true;
+    pthread_mutex_unlock(&ai->seed_mutex);
 }
